@@ -14,4 +14,18 @@
     <string name="you_sure_you_want_to_exit">Na pewno nie chcesz dokończyć notatki?</string>
     <string name="no">Nie</string>
     <string name="yes">Tak</string>
+    <string name="counter_value">Ilość podpunktów:\n</string>
+    <string name="delete_note">Usuń</string>
+    <string name="edit_note">Edytuj</string>
+    <string name="do_nothing">Nic nie rób</string>
+    <string name="do_you_want_to_do_smth_with_this_note">Czy chcesz coś zrobić z tą notatką?\n</string>
+    <string name="deleted">Usunięto</string>
+    <string name="edited">Edytowano</string>
+    <string name="you_have_chosen">Wybrałeś:\n</string>
+    <string name="are_you_sure">Jesteś pewien?</string>
+    <string name="edit_your_note">Popraw notatkę:</string>
+    <string name="confirme_edit">Zatwierdź</string>
+    <string name="cancel">Cofnij</string>
+    <string name="field_cant_be_empty">Pole nie może być puste</string>
+
 </resources>

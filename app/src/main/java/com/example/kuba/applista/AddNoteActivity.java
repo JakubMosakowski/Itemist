@@ -1,48 +1,70 @@
 package com.example.kuba.applista;
 
 
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
+import android.content.Intent;
+
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
-import android.text.method.ScrollingMovementMethod;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+
 import android.widget.EditText;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class AddNoteActivity extends AppCompatActivity {
-    EditText editTextNameOfNote;
-    Button buttonNameOfNote;
-    EditText editTextSubpointOfTheList;
-    Button buttonAccept;
-    TextView list;
-    int howManySubpoints=0;
+
+    private ListView list;
+    private ArrayAdapter<String> adapter;
+    private EditText editTextSubpointOfTheList;
+    private TextView textViewCounter;
+    private int howManySubpoints = 0;
+    private Context context;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_list);
-        list = (TextView) findViewById(R.id.TextViewSubpoints);
-        editTextNameOfNote = (EditText) findViewById(R.id.editText_add_name_of_note);
-        buttonNameOfNote = (Button) findViewById(R.id.button_name_of_note);
-        editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
-        buttonAccept = (Button) findViewById(R.id.button_accept_subpoint);
-        list.setMovementMethod(new ScrollingMovementMethod());
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_add_note);
 
-        editTextNameOfNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        list = (ListView) findViewById(R.id.listView);
+        textViewCounter = (TextView) findViewById(R.id.textView_counter);
+        editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
+        context = getApplicationContext();
+        String subpoints[] = {""};
+        ArrayList<String> subpointsL = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
+        list.setAdapter(adapter);
+        View v = findViewById(R.id.activity_add_note);
+
+         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    enterNote(v);
-                }
-                return false;
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        Intent intent = getIntent();
+        String toolbarTitle = intent.getStringExtra("location");
+        toolbar.setTitle(toolbarTitle);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialogDeleteEdit(position);
             }
         });
         editTextSubpointOfTheList.setOnEditorActionListener(new EditText.OnEditorActionListener() {
@@ -51,18 +73,26 @@ public class AddNoteActivity extends AppCompatActivity {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     buttonAcceptOnClick(v);
                 }
-                return true;
+                return false;
             }
         });
 
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        View view = getCurrentFocus();
+        if (view != null && (ev.getAction() == MotionEvent.ACTION_UP || ev.getAction() == MotionEvent.ACTION_MOVE) && view instanceof EditText && !view.getClass().getName().startsWith("android.webkit.")) {
+            int scrcoords[] = new int[2];
+            view.getLocationOnScreen(scrcoords);
+            float x = ev.getRawX() + view.getLeft() - scrcoords[0];
+            float y = ev.getRawY() + view.getTop() - scrcoords[1];
+            if (x < view.getLeft() || x > view.getRight() || y < view.getTop() || y > view.getBottom())
+                ((InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow((this.getWindow().getDecorView().getApplicationWindowToken()), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -71,7 +101,9 @@ public class AddNoteActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        finish();
+                        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton(R.string.no, null)
@@ -79,73 +111,104 @@ public class AddNoteActivity extends AppCompatActivity {
     }
 
 
-    protected boolean setTitleOfToolbar(View v) {
-        if (editTextNameOfNote == null) {
-            Toast toast = Toast.makeText(this, "Error", Toast.LENGTH_LONG);
-            ;
-            toast.show();
-            return false;
-        } else {
-            String nameOfNote = editTextNameOfNote.getText().toString();
-            Toolbar toolbar = ToolbarMenagment.getToolbarView(this);
-            if (!nameOfNote.equals("")) {
-                toolbar.setTitle(nameOfNote);
-                Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_LONG).show();
-                return true;
-            } else {
-                Toast toast = Toast.makeText(this, getResources().getString(R.string.error_no_name), Toast.LENGTH_LONG);
-                toast.show();
-                return false;
-            }
-        }
-    }
-
-    protected void enterNote(View v) {
-        if (setTitleOfToolbar(v)) {
-            hideEditTextNameOfNote();
-            hideButtonNameOfNote();
-            showSubpointOfTheList();
-            showButtonAccept();
-        }
-
-    }
-
-    protected void hideEditTextNameOfNote() {
-        editTextNameOfNote.setVisibility(View.INVISIBLE);
-    }
-
-    protected void hideButtonNameOfNote() {
-        buttonNameOfNote.setVisibility(View.INVISIBLE);
-    }
-
-    protected void showSubpointOfTheList() {
-        editTextSubpointOfTheList.setVisibility(View.VISIBLE);
-    }
-
-    protected void showButtonAccept() {
-        buttonAccept.setVisibility(View.VISIBLE);
-    }
-
     protected void buttonAcceptOnClick(View v) {
 
         String subpoint = editTextSubpointOfTheList.getText().toString();
-        howManySubpoints++;
-        //TODO usun to jak będzie działać
-
 
         if (!subpoint.equals("")) {
-            Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
             addSubpoint(v, subpoint);
+            counterUpdatePlus();
         } else {
-            Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_SHORT).show();
         }
     }
 
     protected void addSubpoint(View v, String subpoint) {
-        String contentOfList = list.getText().toString();
         editTextSubpointOfTheList.setText("");
-        list.setVisibility(View.VISIBLE);
-        list.setText(contentOfList + "\n" + subpoint);
+        adapter.add(subpoint);
     }
 
+    protected void counterUpdatePlus() {
+        howManySubpoints++;
+        textViewCounter.setText(getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints));
+    }
+
+    protected void counterUpdateMinus() {
+        howManySubpoints--;
+        textViewCounter.setText(getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints));
+    }
+
+    protected void deleteNote(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.are_you_sure));
+        builder.setCancelable(false);
+        builder.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                adapter.remove(adapter.getItem(position));
+                counterUpdateMinus();
+                Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(getResources().getString(R.string.no), null);
+        builder.show();
+
+
+    }
+
+    protected void editNote(final int position) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(AddNoteActivity.this);
+        alert.setTitle(getResources().getString(R.string.edit_your_note));
+
+        alert.setView(edittext);
+        edittext.setText("");
+        edittext.setHint(adapter.getItem(position));
+        alert.setPositiveButton(getResources().getString(R.string.confirme_edit), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                if (!edittext.getText().toString().isEmpty()) {
+                    adapter.remove(adapter.getItem(position));
+                    adapter.insert(edittext.getText().toString(), position);
+                    Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        alert.setNegativeButton(getResources().getString(R.string.cancel), null);
+        alert.show();
+    }
+
+    protected void dialogDeleteEdit(final int position) {
+        CharSequence options[] = new CharSequence[]{
+                getResources().getString(R.string.delete_note),
+                getResources().getString(R.string.edit_note),
+                getResources().getString(R.string.do_nothing)
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.do_you_want_to_do_smth_with_this_note));
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_have_chosen) + adapter.getItem(position), Toast.LENGTH_LONG).show();
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (which == 0) {
+                    deleteNote(position);
+                } else if (which == 1) {
+                    editNote(position);
+                }
+
+            }
+        });
+        builder.show();
+    }
+
+    protected void finishNote(View v){
+
+
+        SharedPreferences pref = getSharedPreferences(toolbar.getTitle().toString(),Context.MODE_PRIVATE);
+        pref.edit().putString(adapter.toString(),null);
+    }
 }
