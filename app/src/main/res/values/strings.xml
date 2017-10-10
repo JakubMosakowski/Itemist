@@ -7,5 +7,11 @@
     <string name="finsh_button">Zakończ</string>
     <string name="note_added">Notatka dodana</string>
     <string name="add_name_of_note_button">Nadaj nazwę</string>
-    <string name="error_wrong_name">Podaj inną nazwę!</string>
+    <string name="error_no_name">Podaj nazwę!</string>
+    <string name="ok">Ok</string>
+    <string name="enter_content_of_subpoint">Podaj podpunkt listy</string>
+    <string name="subpoint_added">Podpunkt dodano!</string>
+    <string name="you_sure_you_want_to_exit">Na pewno nie chcesz dokończyć notatki?</string>
+    <string name="no">Nie</string>
+    <string name="yes">Tak</string>
 </resources>
