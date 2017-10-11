@@ -23,4 +23,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NameNoteActivity.class);
         startActivity(intent);
     }
+
+    public void toChooseNoteActivity(View v){
+        Intent intent = new Intent(this, ChooseNoteActivity.class);
+        startActivity(intent);
+    }
 }

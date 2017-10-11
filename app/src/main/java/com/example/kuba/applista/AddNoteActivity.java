@@ -4,8 +4,6 @@ package com.example.kuba.applista;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
-import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +27,7 @@ import java.util.ArrayList;
 public class AddNoteActivity extends AppCompatActivity {
 
     private ListView list;
+
     private ArrayAdapter<String> adapter;
     private EditText editTextSubpointOfTheList;
     private TextView textViewCounter;
@@ -45,13 +44,14 @@ public class AddNoteActivity extends AppCompatActivity {
         textViewCounter = (TextView) findViewById(R.id.textView_counter);
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
+
         String subpoints[] = {""};
         ArrayList<String> subpointsL = new ArrayList<String>();
         adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
         list.setAdapter(adapter);
         View v = findViewById(R.id.activity_add_note);
 
-         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,9 +206,11 @@ public class AddNoteActivity extends AppCompatActivity {
     }
 
     protected void finishNote(View v){
-
-
-        SharedPreferences pref = getSharedPreferences(toolbar.getTitle().toString(),Context.MODE_PRIVATE);
-        pref.edit().putString(adapter.toString(),null);
+        DataHandler data=new DataHandler(toolbar.getTitle().toString(),adapter,context);
+        data.writeToFileWithNotes();
+        data.writeToFileWithSubpoints();
+        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+        startActivity(intent);
+        Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
     }
 }

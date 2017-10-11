@@ -24,13 +24,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".AddNoteActivity"
+        <activity
+            android:name=".AddNoteActivity"
             android:parentActivityName=".NameNoteActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
-
         </activity>
+        <activity android:name=".ChooseNoteActivity"></activity>
     </application>
 
 </manifest>
