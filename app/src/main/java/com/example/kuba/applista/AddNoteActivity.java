@@ -45,10 +45,7 @@ public class AddNoteActivity extends AppCompatActivity {
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
 
-        String subpoints[] = {""};
-        ArrayList<String> subpointsL = new ArrayList<String>();
-        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
-        list.setAdapter(adapter);
+        setAdapter();
         View v = findViewById(R.id.activity_add_note);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -78,7 +75,12 @@ public class AddNoteActivity extends AppCompatActivity {
         });
 
     }
-
+    public void setAdapter(){
+        String subpoints[] = {""};
+        ArrayList<String> subpointsL = new ArrayList<String>();
+        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
+        list.setAdapter(adapter);
+    }
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         View view = getCurrentFocus();
