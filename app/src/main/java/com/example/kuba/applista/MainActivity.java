@@ -18,13 +18,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void toAddNoteActivity(View view)
-    {
+    public void toAddNoteActivity(View view) {
         Intent intent = new Intent(this, NameNoteActivity.class);
         startActivity(intent);
     }
 
-    public void toChooseNoteActivity(View v){
+    public void toChooseNoteActivity(View v) {
         Intent intent = new Intent(this, ChooseNoteActivity.class);
         startActivity(intent);
     }

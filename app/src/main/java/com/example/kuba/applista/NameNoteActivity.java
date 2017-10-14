@@ -17,6 +17,7 @@ import android.widget.Toast;
 public class NameNoteActivity extends AppCompatActivity {
     EditText editTextNameOfNote;
     Button buttonNameOfNote;
+    Toolbar toolbar;
 
 
     @Override
@@ -25,9 +26,7 @@ public class NameNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_name_note);
         editTextNameOfNote = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         buttonNameOfNote = (Button) findViewById(R.id.button_name_of_note);
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         editTextNameOfNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
@@ -38,9 +37,6 @@ public class NameNoteActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -49,26 +45,18 @@ public class NameNoteActivity extends AppCompatActivity {
         });
     }
 
-    protected void changeActivity() {
-            String nameOfNote = editTextNameOfNote.getText().toString();
+    protected void enterNote(View v){
+        String nameOfNote = editTextNameOfNote.getText().toString();
 
-            if (!nameOfNote.equals("")) {
-                Intent intent = new Intent(NameNoteActivity.this, AddNoteActivity.class);
-                intent.putExtra("location", nameOfNote);
-                NameNoteActivity.this.startActivity(intent);
+        if (!nameOfNote.equals("")) {
+            Intent intent = new Intent(NameNoteActivity.this, AddNoteActivity.class);
+            intent.putExtra("location", nameOfNote);
+            NameNoteActivity.this.startActivity(intent);
 
-            } else {
-                Toast toast = Toast.makeText(this, getResources().getString(R.string.error_no_name), Toast.LENGTH_SHORT);
-                toast.show();
-            }
+        } else {
+            Toast toast = Toast.makeText(this, getResources().getString(R.string.error_no_name), Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
-
-    protected void enterNote(View v) {
-       changeActivity();
-
-    }
-
-
-
 
 }

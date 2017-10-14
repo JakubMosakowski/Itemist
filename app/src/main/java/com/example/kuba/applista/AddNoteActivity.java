@@ -15,25 +15,26 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 
 
 public class AddNoteActivity extends AppCompatActivity {
 
     private ListView list;
-
+    private Intent intent;
     private ArrayAdapter<String> adapter;
     private EditText editTextSubpointOfTheList;
     private TextView textViewCounter;
     private int howManySubpoints = 0;
     private Context context;
     private Toolbar toolbar;
+    private String STRING_KEY_RESTORE="string_key";
+    private String INT_KEY="int_key";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,26 +45,14 @@ public class AddNoteActivity extends AppCompatActivity {
         textViewCounter = (TextView) findViewById(R.id.textView_counter);
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
-
-        setAdapter();
-        View v = findViewById(R.id.activity_add_note);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        Intent intent = getIntent();
-        String toolbarTitle = intent.getStringExtra("location");
-        toolbar.setTitle(toolbarTitle);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dialogDeleteEdit(position);
-            }
-        });
+        intent = getIntent();
+        //setters
+
+        setAdapter(savedInstanceState);
+        setToolbar();
+        setCounter(savedInstanceState);
+
         editTextSubpointOfTheList.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -73,13 +62,35 @@ public class AddNoteActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
-    public void setAdapter(){
-        String subpoints[] = {""};
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<String> stringList=new ArrayList<String>();
+        for(int i=0 ; i<adapter.getCount() ; i++){
+            stringList.add(adapter.getItem(i));
+        }
+        outState.putInt(INT_KEY,howManySubpoints);
+        outState.putStringArrayList(STRING_KEY_RESTORE, stringList);
+    }
+
+
+    public void setAdapter(Bundle bundle){
         ArrayList<String> subpointsL = new ArrayList<String>();
+        if(bundle!=null) {
+            subpointsL=bundle.getStringArrayList(STRING_KEY_RESTORE);
+        }
+
         adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialogDeleteEdit(position);
+            }
+        });
     }
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -94,7 +105,15 @@ public class AddNoteActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
-
+    public void setToolbar(){
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        toolbar.setTitle(intent.getStringExtra("location"));
+    }
 
     @Override
     public void onBackPressed() {
@@ -111,7 +130,12 @@ public class AddNoteActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.no, null)
                 .show();
     }
-
+    public void setCounter(Bundle bundle){
+        if(bundle!=null)
+            howManySubpoints=bundle.getInt(INT_KEY);
+        String container =getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints);
+        textViewCounter.setText(container);
+    }
 
     protected void buttonAcceptOnClick(View v) {
 
@@ -155,8 +179,6 @@ public class AddNoteActivity extends AppCompatActivity {
         });
         builder.setNegativeButton(getResources().getString(R.string.no), null);
         builder.show();
-
-
     }
 
     protected void editNote(final int position) {
