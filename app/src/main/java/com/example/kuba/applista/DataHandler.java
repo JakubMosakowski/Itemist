@@ -3,20 +3,15 @@ package com.example.kuba.applista;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
 /**
  * Created by Kuba on 11.10.2017.
@@ -27,35 +22,28 @@ public class DataHandler extends Application {
     private String NOTES="notes.txt";
 
     private FileOutputStream outputStream;
-    private FileInputStream inputStream;
     private Context ctx;
     public String[] stringWithNotes=new String[50];//TODO ZMIEN TE 50
-    public String[] stringWithSubpoints=null;
+    public String[] stringWithSubpoints=new String[50];
 
     DataHandler(String fn,Context c,String[] s){
-        try {
+
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
         createNotesFile();
         createSubpointFile();
-
-
         for(int i=0;i<50;i++)
-            stringWithNotes[i]="0";//TODO USUN
-    }catch (Exception e){
-        Log.e("TAG",NOTES);
-    }
+            stringWithNotes[i]="0";
     }
     DataHandler(Context c){
-        try {
             ctx = c;
-
-            //createNotesFile();
-        }catch (Exception e){
-            Log.e("TAG",NOTES);
-        }
-
+            createNotesFile();
+    }
+    DataHandler(Context c,String fn){
+        ctx = c;
+        filename=fn;
+        createNotesFile();
     }
     public void addFilename(String file){
         filename=file;
@@ -63,7 +51,7 @@ public class DataHandler extends Application {
     public void addStringArray(String[] array){stringWithSubpoints=array;}
 
 
-    public void writeToFileWithSubpoints(){
+    public void appendToFileWithSubpoints(){
         try {
             String smth;
             outputStream = ctx.openFileOutput(filename, Context.MODE_APPEND);
@@ -77,7 +65,7 @@ public class DataHandler extends Application {
             e.printStackTrace();
         }
     }
-    public void writeToFileWithNotes(){
+    public void appendToFileWithNotes(){
         try {
             String smth="\n"+filename;
             outputStream = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
@@ -91,12 +79,12 @@ public class DataHandler extends Application {
 
     public void readFromFileWithSubpoints(){
         try {
-            inputStream = ctx.openFileInput(filename);
-            InputStreamReader isr = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(isr);
+            FileInputStream fis=ctx.openFileInput(filename);
+            InputStreamReader isr=new InputStreamReader(fis);
+            BufferedReader br=new BufferedReader(isr);
             int i=0;
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 stringWithSubpoints[i]=line;
                 i++;
             }
@@ -117,21 +105,18 @@ public class DataHandler extends Application {
                 stringWithNotes[i]=s;
                 i++;
             }
-
-           // Toast.makeText(ctx, "TO SIĘ ROBI W TRY", Toast.LENGTH_SHORT).show();//TODO usun
         } catch (Exception e) {
             Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
-            //Toast.makeText(ctx, e.toString(), Toast.LENGTH_SHORT).show();//TODO usun
         }
 
     }
 
-    public String[] returnArrayWithSubpoints(){
+    public String[] getArrayWithSubpoints(){
         readFromFileWithSubpoints();
         return stringWithSubpoints;
     }
 
-    public String[] returnArrayWithNotes(){
+    public String[] getArrayWithNotes(){
         readFromFileWithNotes();
         return stringWithNotes;
     }
@@ -143,10 +128,6 @@ public class DataHandler extends Application {
                 FileOutputStream fileOs = ctx.openFileOutput(NOTES, ctx.MODE_APPEND);
                 fileOs.close();
 
-           /* Log.e("TAG","CRASH w createNote write:"+file.canWrite());
-            Log.e("TAG","CRASH w createNote read:"+ file.canRead());
-            Log.e("TAG","CRASH w createNote path: "+  file.getCanonicalPath());*/
-
         } catch (Exception e) {
             Log.e("TAG","CRASH w createNote "+ Arrays.toString(e.getStackTrace()));
 
@@ -155,22 +136,19 @@ public class DataHandler extends Application {
     public void createSubpointFile(){
         FileInputStream inputStream = null;
         try {
-            FileOutputStream fOut = ctx.openFileOutput(filename,Context.MODE_PRIVATE);
-            OutputStreamWriter osw = new OutputStreamWriter(fOut);
-            osw.close();
+            FileOutputStream fOut = ctx.openFileOutput(filename,Context.MODE_APPEND);
+            fOut.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    //TODO zmien na stringi
-    /*public void deleteNote(String name){
+    public void deleteNote(String name){
         //najpierw usuń z pliku z notatkami, potem cały plik z notatką.
-        readFromFileWithNotes();
-        adapterWithNotes.remove(name);
-        writeToFileWithNotes();
+        List<String> notes = new ArrayList<String>(Arrays.asList(getArrayWithNotes()));
+        notes.remove(name);
+        appendToFileWithNotes();
 
         try {
             ctx.deleteFile(name);
@@ -178,5 +156,5 @@ public class DataHandler extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }

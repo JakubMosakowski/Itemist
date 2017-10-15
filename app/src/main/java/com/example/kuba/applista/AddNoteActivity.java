@@ -237,14 +237,14 @@ public class AddNoteActivity extends AppCompatActivity {
             array[i]=adapter.getItem(i);
         DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
 
-        data.writeToFileWithNotes();
-        data.writeToFileWithSubpoints();
+        data.appendToFileWithNotes();
+        data.appendToFileWithSubpoints();
         try{
-            Toast.makeText(getApplicationContext(), Arrays.toString(data.returnArrayWithNotes()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), Arrays.toString(data.getArrayWithNotes()), Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             Log.d("TAG", "MOJE ERRORY:"+Arrays.toString(e.getStackTrace()));
         }
-        //
+
         Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
         startActivity(intent);
         Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();

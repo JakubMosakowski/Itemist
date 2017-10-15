@@ -1,14 +1,19 @@
 package com.example.kuba.applista;
 
 import android.content.Context;
-import android.os.Environment;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,12 +52,12 @@ public class ChooseNoteActivity extends AppCompatActivity {
         DataHandler data=new DataHandler(context);
 
         ArrayList<String> notes = new ArrayList<String>();
-        String [] notesArray=data.returnArrayWithNotes();
+        String [] notesArray=data.getArrayWithNotes();
         int count = notesArray.length;
         Log.d("TAG", String.valueOf(count));
 
         try{
-            Toast.makeText(getApplicationContext(), Arrays.toString(data.returnArrayWithNotes()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), Arrays.toString(data.getArrayWithNotes()), Toast.LENGTH_SHORT).show();
         }catch (Exception e){
             Log.d("TAG", "MOJE ERRORY:"+Arrays.toString(e.getStackTrace()));
         }
@@ -68,6 +73,17 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
         list = (ListView) findViewById(R.id.listView);
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                goToNote(position);
+            }
+        });
+    }
+    public void goToNote(int position){
+        Intent intent = new Intent(ChooseNoteActivity.this, NoteActivity.class);
+        intent.putExtra("location", adapter.getItem(position));
+        ChooseNoteActivity.this.startActivity(intent);
     }
 
 }
