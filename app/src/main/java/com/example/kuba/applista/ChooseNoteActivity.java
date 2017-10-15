@@ -1,9 +1,11 @@
 package com.example.kuba.applista;
 
 import android.content.Context;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -18,6 +20,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
     private ListView list;
     private Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +29,14 @@ public class ChooseNoteActivity extends AppCompatActivity {
         context = getApplicationContext();
         toolbar=(Toolbar)findViewById(R.id.toolbar);
         list = (ListView) findViewById(R.id.listView);
+        try{
+            enterNotesToListView();
+        }
+        catch(Exception e){
+            Log.e("TAG","CRASHw onCreate StackTrace: "+ Arrays.toString(e.getStackTrace()));
+        }
 
-
-        defaultAdapter();
-       /* enterNotesToListView();
-        */toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
@@ -39,21 +45,29 @@ public class ChooseNoteActivity extends AppCompatActivity {
     }
     public void enterNotesToListView(){
         DataHandler data=new DataHandler(context);
-        adapter=data.returnAdapterWithNotes();
-        Toast.makeText(getApplicationContext(), String.valueOf(adapter.getCount()), Toast.LENGTH_SHORT).show();
+
+        ArrayList<String> notes = new ArrayList<String>();
+        String [] notesArray=data.returnArrayWithNotes();
+        int count = notesArray.length;
+        Log.d("TAG", String.valueOf(count));
+
+        try{
+            Toast.makeText(getApplicationContext(), Arrays.toString(data.returnArrayWithNotes()), Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.d("TAG", "MOJE ERRORY:"+Arrays.toString(e.getStackTrace()));
+        }
+        for (int i = 0; i < count; i++) {
+             /*====== this is where listView is populated =====*/
+            if(notesArray[i] != null) {
+                notes.add(notesArray[i]);
+            }
+        }
+        //Toast.makeText(getApplicationContext(),String.valueOf(notesArray.length) , Toast.LENGTH_LONG).show();//TODO usuń
+      // notes.addAll( Arrays.asList(notesArray) );
+        adapter = new ArrayAdapter<String>(this, R.layout.row_for_notes_names, notes);
+
         list = (ListView) findViewById(R.id.listView);
         list.setAdapter(adapter);
     }
-    public void defaultAdapter(){
 
-
-        String cars[] = {"Mercedes", "Fiat", "Ferrari", "Aston Martin", "Lamborghini", "Skoda", "Volkswagen", "Audi", "Citroen"};
-
-        ArrayList<String> carL = new ArrayList<String>();
-        carL.addAll( Arrays.asList(cars) );
-
-        adapter = new ArrayAdapter<String>(this, R.layout.row_for_notes_names, carL);
-
-        list.setAdapter(adapter);
-    }
 }

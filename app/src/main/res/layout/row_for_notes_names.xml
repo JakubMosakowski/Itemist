@@ -3,6 +3,6 @@
     android:id="@+id/Row_for_note_name"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="50sp"
+    android:textSize="35sp"
     android:gravity="center_vertical">
 </CheckedTextView>

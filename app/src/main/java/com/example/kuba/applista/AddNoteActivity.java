@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class AddNoteActivity extends AppCompatActivity {
@@ -230,11 +232,22 @@ public class AddNoteActivity extends AppCompatActivity {
     }
 
     protected void finishNote(View v){
-        DataHandler data=new DataHandler(toolbar.getTitle().toString(),adapter,context);
+        String[] array=new String[adapter.getCount()];
+        for(int i=0;i<adapter.getCount();i++)
+            array[i]=adapter.getItem(i);
+        DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
+
         data.writeToFileWithNotes();
         data.writeToFileWithSubpoints();
+        try{
+            Toast.makeText(getApplicationContext(), Arrays.toString(data.returnArrayWithNotes()), Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Log.d("TAG", "MOJE ERRORY:"+Arrays.toString(e.getStackTrace()));
+        }
+        //
         Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
         startActivity(intent);
         Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
+
     }
 }
