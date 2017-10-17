@@ -15,17 +15,22 @@
     <string name="no">Nie</string>
     <string name="yes">Tak</string>
     <string name="counter_value">Ilość podpunktów:\n</string>
-    <string name="delete_note">Usuń</string>
-    <string name="edit_note">Edytuj</string>
+    <string name="delete">Usuń</string>
+    <string name="edit">Edytuj</string>
     <string name="do_nothing">Nic nie rób</string>
     <string name="do_you_want_to_do_smth_with_this_note">Czy chcesz coś zrobić z tą notatką?\n</string>
+    <string name="do_you_want_to_do_smth_with_this_subpoint">Czy chcesz coś zrobić z tym podpunktem?\n</string>
     <string name="deleted">Usunięto</string>
     <string name="edited">Edytowano</string>
     <string name="you_have_chosen">Wybrałeś:\n</string>
     <string name="are_you_sure">Jesteś pewien?</string>
-    <string name="edit_your_note">Popraw notatkę:</string>
+    <string name="correct">Popraw:</string>
     <string name="confirme_edit">Zatwierdź</string>
     <string name="cancel">Cofnij</string>
     <string name="field_cant_be_empty">Pole nie może być puste</string>
+    <string name="you_have_no_notes">Nie masz żadnych notatek!</string>
+    <string name="you_cant_have_more_notes">Nie możesz mieć więcej niż 30 notatek!</string>
+    <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 30 podpunktów!</string>
+
 
 </resources>

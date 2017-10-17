@@ -4,8 +4,9 @@
     android:id="@+id/Row_for_note_name"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textSize="35sp"
-    android:gravity="center_vertical">
+    android:textSize="25sp"
+    android:gravity="center_vertical"
+    android:descendantFocusability="blocksDescendants">
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
@@ -15,5 +16,6 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView"
+/>
 </LinearLayout>

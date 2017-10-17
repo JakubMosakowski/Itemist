@@ -9,36 +9,50 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-public class CustomAdapter extends ArrayAdapter<Model> {
+import java.util.ArrayList;
+
+public class CustomAdapter extends ArrayAdapter<Model>  {
     Model[] modelItems = null;
+    private ArrayList<Model> modelArray;
     Context context;
 
     public CustomAdapter(Context context, Model[] resource) {
         super(context, R.layout.row, resource);
-        // TODO Auto-generated constructor stub
         this.context = context;
         this.modelItems = resource;
     }
+    public CustomAdapter(ArrayList<Model> data, Context context) {
+        super(context, R.layout.row_for_subpoints, data);
+        this.modelArray = data;
+        this.context=context;
+    }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
+        Model model=getItem(position);
         if(convertView==null){
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
             TextView name = (TextView) convertView.findViewById(R.id.textView);
             CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
-            name.setText(modelItems[position].getName());
-            if (modelItems[position].getEnabled() == true)
+            name.setText(model.getName());
+            if (model.getEnabled() == true){
                 cb.setChecked(true);
-            else
+            } else{
                 cb.setChecked(false);
+            }
         }
 
         return convertView;
+
     }
+
+
+
 }

@@ -3,6 +3,7 @@ package com.example.kuba.applista;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -23,24 +24,22 @@ public class DataHandler extends Application {
 
     private FileOutputStream outputStream;
     private Context ctx;
-    public String[] stringWithNotes=new String[50];//TODO ZMIEN TE 50
-    public String[] stringWithSubpoints=new String[50];
+    private int HOWMANY=30;
+    public String[] stringWithNotes=new String[HOWMANY];
+    public String[] stringWithSubpoints=new String[HOWMANY];
 
     DataHandler(String fn,Context c,String[] s){
-
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
         createNotesFile();
         createSubpointFile();
-        for(int i=0;i<50;i++)
-            stringWithNotes[i]="0";
     }
     DataHandler(Context c){
             ctx = c;
             createNotesFile();
     }
-    DataHandler(Context c,String fn){
+    DataHandler(String fn,Context c){
         ctx = c;
         filename=fn;
         createNotesFile();
@@ -48,8 +47,9 @@ public class DataHandler extends Application {
     public void addFilename(String file){
         filename=file;
     }
-    public void addStringArray(String[] array){stringWithSubpoints=array;}
-
+    public void addStringWithSubpointsArray(String[] array){stringWithSubpoints=array;}
+    public void addStringWithNotesArray(String[] array)
+    {stringWithNotes=array;}
 
     public void appendToFileWithSubpoints(){
         try {
@@ -65,15 +65,42 @@ public class DataHandler extends Application {
             e.printStackTrace();
         }
     }
-    public void appendToFileWithNotes(){
+    public void replaceFileWithSubpoints(){
         try {
-            String smth="\n"+filename;
-            outputStream = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
-            outputStream.write(smth.getBytes());
+            String smth;
+            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            for(int i=0;i<stringWithSubpoints.length;i++){
+                smth=stringWithSubpoints[i]+"\n";
+                outputStream.write(smth.getBytes());
+            }
 
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public void replaceFileWithNotes(){
+        try {
+            String smth;
+            outputStream = ctx.openFileOutput(NOTES, Context.MODE_PRIVATE);
+            for(int i=0;i<stringWithNotes.length;i++){
+                smth=stringWithNotes[i]+"\n";
+                outputStream.write(smth.getBytes());
+            }
+
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void appendToFileWithNotes(){
+        try {
+            String smth=filename+"\n";
+            outputStream = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
+            outputStream.write(smth.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            Log.e("TAG","CRASH w append: "+ Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -106,19 +133,23 @@ public class DataHandler extends Application {
                 i++;
             }
         } catch (Exception e) {
-            Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
+                Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
         }
 
     }
 
     public String[] getArrayWithSubpoints(){
         readFromFileWithSubpoints();
-        return stringWithSubpoints;
+        String[] array=stringWithSubpoints;
+        array=trimEmptyArray(array);
+        return array;
     }
 
     public String[] getArrayWithNotes(){
         readFromFileWithNotes();
-        return stringWithNotes;
+        String[] array=stringWithNotes;
+       //array=trimEmptyArray(array);
+        return array;
     }
 
     public void createNotesFile(){
@@ -148,13 +179,36 @@ public class DataHandler extends Application {
         //najpierw usuń z pliku z notatkami, potem cały plik z notatką.
         List<String> notes = new ArrayList<String>(Arrays.asList(getArrayWithNotes()));
         notes.remove(name);
-        appendToFileWithNotes();
+        addStringWithNotesArray(notes.toArray(stringWithNotes));
+        replaceFileWithNotes();
 
         try {
             ctx.deleteFile(name);
+            Toast.makeText(ctx, name, Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e("TAG", "Cos sie nie usuwa:" + Arrays.toString(e.getStackTrace()));
         }
+    }
+    public void deleteAllFiles(){
+        int len=getArrayWithNotes().length;
+        String[] array=getArrayWithNotes();
+        ctx.deleteFile(NOTES);
+        for(int i=0;i<len;i++)
+            ctx.deleteFile(array[i]);
+    }
+    public String getFilename(){
+        return this.filename;
+    }
+    public String[] trimEmptyArray(String[] array){
+        int len=0;
+        for(int i=0;i<array.length;i++)
+            if(array[i]!=null)
+                if(!array[i].equals("")&&!array[i].equals("0")&&!array[i].equals("null"))
+                    len++;
+        String[] newArray=new String[len];
+        for(int i=0;i<len;i++)
+            newArray[i]=array[i];
+        return newArray;
     }
 }
