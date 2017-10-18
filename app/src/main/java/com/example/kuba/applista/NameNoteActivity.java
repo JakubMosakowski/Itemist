@@ -4,7 +4,6 @@ package com.example.kuba.applista;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -14,8 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.Arrays;
 
 
 public class NameNoteActivity extends AppCompatActivity {
@@ -29,7 +26,7 @@ public class NameNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_name_note);
-        editTextNameOfNote = (EditText) findViewById(R.id.editText_name_of_note);
+        editTextNameOfNote = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         buttonNameOfNote = (Button) findViewById(R.id.button_name_of_note);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         context = getApplicationContext();

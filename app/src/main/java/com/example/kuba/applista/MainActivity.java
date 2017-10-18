@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
@@ -21,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ctx=getApplicationContext();
         toolbar.setNavigationIcon(null);
-
     }
 
     public void toAddNoteActivity(View v) {
@@ -43,8 +43,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean notesAreEmpty(){
 
         DataHandler data=new DataHandler(ctx);
-       //data.deleteAllFiles();
-        Toast.makeText(ctx, Arrays.toString(data.getArrayWithNotes()), Toast.LENGTH_SHORT).show();
+
+            //data.deleteAllFiles();//TODO delete that
+
         if(data.getArrayWithNotes().length==0)
             return true;
         else

@@ -3,9 +3,8 @@ package com.example.kuba.applista;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,11 +28,14 @@ public class DataHandler extends Application {
     public String[] stringWithSubpoints=new String[HOWMANY];
 
     DataHandler(String fn,Context c,String[] s){
+
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
         createNotesFile();
         createSubpointFile();
+        for(int i=0;i<HOWMANY;i++)
+            stringWithNotes[i]="0";
     }
     DataHandler(Context c){
             ctx = c;
@@ -51,12 +53,13 @@ public class DataHandler extends Application {
     public void addStringWithNotesArray(String[] array)
     {stringWithNotes=array;}
 
+
     public void appendToFileWithSubpoints(){
         try {
             String smth;
             outputStream = ctx.openFileOutput(filename, Context.MODE_APPEND);
             for(int i=0;i<stringWithSubpoints.length;i++){
-                 smth=stringWithSubpoints[i]+"\n";
+                smth=stringWithSubpoints[i]+"\n";
                 outputStream.write(smth.getBytes());
             }
 
@@ -69,6 +72,7 @@ public class DataHandler extends Application {
         try {
             String smth;
             outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            stringWithSubpoints=getArrayWithSubpoints();
             for(int i=0;i<stringWithSubpoints.length;i++){
                 smth=stringWithSubpoints[i]+"\n";
                 outputStream.write(smth.getBytes());
@@ -83,6 +87,7 @@ public class DataHandler extends Application {
         try {
             String smth;
             outputStream = ctx.openFileOutput(NOTES, Context.MODE_PRIVATE);
+            stringWithNotes=getArrayWithNotes();
             for(int i=0;i<stringWithNotes.length;i++){
                 smth=stringWithNotes[i]+"\n";
                 outputStream.write(smth.getBytes());
@@ -133,7 +138,7 @@ public class DataHandler extends Application {
                 i++;
             }
         } catch (Exception e) {
-                Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
+            Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
         }
 
     }
@@ -148,7 +153,7 @@ public class DataHandler extends Application {
     public String[] getArrayWithNotes(){
         readFromFileWithNotes();
         String[] array=stringWithNotes;
-       //array=trimEmptyArray(array);
+        array=trimEmptyArray(array);
         return array;
     }
 
@@ -156,7 +161,7 @@ public class DataHandler extends Application {
 
         try {
 
-                FileOutputStream fileOs = ctx.openFileOutput(NOTES, ctx.MODE_APPEND);
+                FileOutputStream fileOs = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
                 fileOs.close();
 
         } catch (Exception e) {
@@ -176,7 +181,6 @@ public class DataHandler extends Application {
     }
 
     public void deleteNote(String name){
-        //najpierw usuń z pliku z notatkami, potem cały plik z notatką.
         List<String> notes = new ArrayList<String>(Arrays.asList(getArrayWithNotes()));
         notes.remove(name);
         addStringWithNotesArray(notes.toArray(stringWithNotes));
@@ -184,18 +188,27 @@ public class DataHandler extends Application {
 
         try {
             ctx.deleteFile(name);
-            Toast.makeText(ctx, name, Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             Log.e("TAG", "Cos sie nie usuwa:" + Arrays.toString(e.getStackTrace()));
         }
     }
-    public void deleteAllFiles(){
+    public void deleteAllFiles() {
         int len=getArrayWithNotes().length;
         String[] array=getArrayWithNotes();
         ctx.deleteFile(NOTES);
-        for(int i=0;i<len;i++)
-            ctx.deleteFile(array[i]);
+
+        for(int i=0;i<len;i++){
+            File f = ctx.getFilesDir();
+            try {
+                f=new File(f.getCanonicalPath()+array[i]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(f.exists() && !f.isDirectory())
+                ctx.deleteFile(array[i]);
+        }
+
     }
     public String getFilename(){
         return this.filename;

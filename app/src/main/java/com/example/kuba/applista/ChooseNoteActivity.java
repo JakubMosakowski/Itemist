@@ -3,6 +3,7 @@ package com.example.kuba.applista;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -24,17 +26,20 @@ public class ChooseNoteActivity extends AppCompatActivity {
     private ListView list;
     private Toolbar toolbar;
     private View v;
+    private ImageButton imgButton;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_note);
-
+        imgButton=(ImageButton)findViewById(R.id.plus_button);
         context = getApplicationContext();
         toolbar=(Toolbar)findViewById(R.id.toolbar);
+
         list = (ListView) findViewById(R.id.listView);
         v=findViewById(R.id.activity_choose_note);
+        setToolbar();
         try{
             enterNotesToListView();
         }
@@ -42,12 +47,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
             Log.e("TAG","CRASHw onCreate StackTrace: "+ Arrays.toString(e.getStackTrace()));
         }
 
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
     }
     public void enterNotesToListView(){
         DataHandler data=new DataHandler(context);
@@ -63,7 +63,9 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 notes.add(notesArray[i]);
             }
         }
-        Toast.makeText(context, Arrays.toString(data.getArrayWithNotes()), Toast.LENGTH_SHORT).show();
+        setAdapter(notes);
+    }
+    public void setAdapter(ArrayList<String> notes){
         adapter = new ArrayAdapter<String>(this, R.layout.row_for_notes_names, notes);
 
         list = (ListView) findViewById(R.id.listView);
@@ -82,6 +84,16 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 goToNote(position);
             }
         });
+    }
+    public void setToolbar(){
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        imgButton.setVisibility(View.VISIBLE);
+
     }
     public void goToNote(int position){
         Intent intent = new Intent(ChooseNoteActivity.this, NoteActivity.class);
@@ -108,7 +120,6 @@ public class ChooseNoteActivity extends AppCompatActivity {
     protected void updateData(int position){
         String noteName=adapter.getItem(position);
         DataHandler data=new DataHandler(noteName,context);
-        Toast.makeText(context, noteName, Toast.LENGTH_SHORT).show();
         data.deleteNote(noteName);
     }
     protected void editSubpoint(final int position) {
@@ -146,7 +157,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.do_you_want_to_do_smth_with_this_note));
-
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_have_chosen) + adapter.getItem(position), Toast.LENGTH_LONG).show();
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

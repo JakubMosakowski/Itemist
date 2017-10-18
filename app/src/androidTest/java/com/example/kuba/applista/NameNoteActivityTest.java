@@ -39,7 +39,7 @@ public class NameNoteActivityTest {
         Log.d("MainActivityTesting", "Check if activity has both buttons with correct subtitle.");
         Activity activity = activityTestRule.getActivity();
         View v=activity.findViewById(R.id.activity_name_note);
-        EditText one=v.findViewById(R.id.editText_name_of_note);
+        EditText one=v.findViewById(R.id.editText_subpoint_of_the_list);
 
         assertNotNull("EditText don't exist",one);
         assertEquals("Wrong hint for EditText",v.getResources().getString(R.string.enter_name_of_note),one.getHint());

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,6 +29,7 @@ public class NoteActivity extends AppCompatActivity {
     private static final String KEY="KEY";
     private CustomAdapter adapter;
     private View v;
+    private ImageButton imgButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class NoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
+        imgButton=(ImageButton)findViewById(R.id.plus_button);
         v=findViewById(R.id.activity_note);
         context = getApplicationContext();
         list = (ListView) findViewById(R.id.listView);
@@ -72,6 +75,7 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
+        imgButton.setVisibility(View.VISIBLE);
     }
 
     public void setAdapter(Bundle bundle) {

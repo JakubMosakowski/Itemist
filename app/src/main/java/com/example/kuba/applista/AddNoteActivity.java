@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,7 +45,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
         list = (ListView) findViewById(R.id.listView);
         textViewCounter = (TextView) findViewById(R.id.textView_counter);
-        editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_name_of_note);
+        editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
@@ -141,18 +142,14 @@ public class AddNoteActivity extends AppCompatActivity {
     protected void buttonAcceptOnClick(View v) {
 
         String subpoint = editTextSubpointOfTheList.getText().toString();
-        if(howManySubpoints>=30){
-            Toast.makeText(context, v.getResources().getString(R.string.you_cant_have_more_subpoints), Toast.LENGTH_LONG).show();
-        }else{
-            if (!subpoint.equals("")) {
-                Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
-                addSubpoint(v, subpoint);
-                counterUpdatePlus();
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_SHORT).show();
-            }
-        }
 
+        if (!subpoint.equals("")) {
+            Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
+            addSubpoint(v, subpoint);
+            counterUpdatePlus();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_SHORT).show();
+        }
     }
 
     protected void addSubpoint(View v, String subpoint) {
@@ -189,7 +186,7 @@ public class AddNoteActivity extends AppCompatActivity {
     protected void editNote(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(AddNoteActivity.this);
-        alert.setTitle(getResources().getString(R.string.correct));
+        alert.setTitle(getResources().getString(R.string.edit));
 
         alert.setView(edittext);
         edittext.setText("");
@@ -217,7 +214,7 @@ public class AddNoteActivity extends AppCompatActivity {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getResources().getString(R.string.do_you_want_to_do_smth_with_this_subpoint));
+        builder.setTitle(getResources().getString(R.string.do_you_want_to_do_smth_with_this_note));
         Toast.makeText(getApplicationContext(), getResources().getString(R.string.you_have_chosen) + adapter.getItem(position), Toast.LENGTH_LONG).show();
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
@@ -241,13 +238,12 @@ public class AddNoteActivity extends AppCompatActivity {
         DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
 
         data.appendToFileWithNotes();
-        Toast.makeText(context, Arrays.toString(data.getArrayWithNotes()), Toast.LENGTH_SHORT).show();
-        data.replaceFileWithSubpoints();
+        data.appendToFileWithSubpoints();
+
 
         Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
         startActivity(intent);
+        Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
 
     }
-
-
 }
