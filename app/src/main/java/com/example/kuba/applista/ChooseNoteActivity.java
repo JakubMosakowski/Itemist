@@ -3,7 +3,6 @@ package com.example.kuba.applista;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private View v;
     private ImageButton imgButton;
+    private String[] subpoints;
 
 
     @Override
@@ -92,8 +92,6 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 finish();
             }
         });
-        imgButton.setVisibility(View.VISIBLE);
-
     }
     public void goToNote(int position){
         Intent intent = new Intent(ChooseNoteActivity.this, NoteActivity.class);
@@ -109,7 +107,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
-                updateData(position);
+                updateDataDelete(position);
                 adapter.remove(adapter.getItem(position));
                 list.setAdapter(adapter);
             }
@@ -117,12 +115,27 @@ public class ChooseNoteActivity extends AppCompatActivity {
         builder.setNegativeButton(getResources().getString(R.string.no), null);
         builder.show();
     }
-    protected void updateData(int position){
+    protected void updateDataDelete(int position){
         String noteName=adapter.getItem(position);
         DataHandler data=new DataHandler(noteName,context);
+        subpoints=data.getArrayWithSubpoints();
         data.deleteNote(noteName);
     }
-    protected void editSubpoint(final int position) {
+    protected void updateDataEdit(int position){
+        String noteName=adapter.getItem(position);
+        DataHandler data=new DataHandler(noteName,context);
+        int len=adapter.getCount();
+
+        String [] notes=new String[len];
+        data.setStringWithSubpointsArray(subpoints);
+        data.replaceFileWithSubpoints(subpoints);
+        for(int i=0;i<len;i++)
+            notes[i]=adapter.getItem(i);
+        data.setStringWithNotesArray(notes);
+        data.replaceFileWithNotes(notes);
+
+    }
+    protected void editNote(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(ChooseNoteActivity.this);
         alert.setTitle(getResources().getString(R.string.edit));
@@ -132,16 +145,22 @@ public class ChooseNoteActivity extends AppCompatActivity {
         edittext.setHint(adapter.getItem(position));
         alert.setPositiveButton(getResources().getString(R.string.confirme_edit), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                if (!edittext.getText().toString().isEmpty()) {
+                boolean sameNameNoteExists=false;
+                for(int i=0;i<adapter.getCount();i++)
+                    if(adapter.getItem(i).equals(edittext.getText().toString()))
+                        sameNameNoteExists=true;
+
+                if (!edittext.getText().toString().isEmpty() && sameNameNoteExists==false) {
+                    updateDataDelete(position);
                     adapter.remove(adapter.getItem(position));
                     adapter.insert(edittext.getText().toString(),position);
-                    updateData(position);
-
+                    updateDataEdit(position);
                     list.setAdapter(adapter);
                     Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
-                } else {
+                } else if(edittext.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
-                }
+                }else
+                    Toast.makeText(getApplicationContext(), R.string.there_is_note_with_that_name, Toast.LENGTH_SHORT).show();
             }
         });
         alert.setNegativeButton(getResources().getString(R.string.cancel), null);
@@ -165,12 +184,11 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 if (which == 0) {
                     deleteNote(position);
                 } else if (which == 1) {
-                    editSubpoint(position);
+                    editNote(position);
                 }
 
             }
         });
         builder.show();
     }
-
 }

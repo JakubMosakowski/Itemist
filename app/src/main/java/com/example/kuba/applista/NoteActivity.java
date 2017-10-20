@@ -145,8 +145,7 @@ public class NoteActivity extends AppCompatActivity {
             array[i]=adapter.getItem(i).getName();
         DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
 
-        data.replaceFileWithNotes();
-        data.replaceFileWithSubpoints();
+        data.replaceFileWithSubpoints(array);
     }
     protected void editSubpoint(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);

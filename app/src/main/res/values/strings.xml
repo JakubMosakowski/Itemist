@@ -31,6 +31,7 @@
     <string name="you_have_no_notes">Nie masz żadnych notatek!</string>
     <string name="you_cant_have_more_notes">Nie możesz mieć więcej niż 30 notatek!</string>
     <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 30 podpunktów!</string>
+    <string name="there_is_note_with_that_name">Już masz notatkę z taką nazwą!</string>
 
 
 </resources>

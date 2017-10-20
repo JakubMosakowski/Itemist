@@ -6,9 +6,13 @@ import android.util.Log;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +24,7 @@ import java.util.List;
 public class DataHandler extends Application {
     private String filename;
     private String NOTES="notes.txt";
+    FileInputStream fis;
 
     private FileOutputStream outputStream;
     private Context ctx;
@@ -32,8 +37,8 @@ public class DataHandler extends Application {
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
-        createNotesFile();
-        createSubpointFile();
+        //createNotesFile();
+        //createSubpointFile();
         for(int i=0;i<HOWMANY;i++)
             stringWithNotes[i]="0";
     }
@@ -46,11 +51,11 @@ public class DataHandler extends Application {
         filename=fn;
         createNotesFile();
     }
-    public void addFilename(String file){
+    public void setFilename(String file){
         filename=file;
     }
-    public void addStringWithSubpointsArray(String[] array){stringWithSubpoints=array;}
-    public void addStringWithNotesArray(String[] array)
+    public void setStringWithSubpointsArray(String[] array){stringWithSubpoints=array;}
+    public void setStringWithNotesArray(String[] array)
     {stringWithNotes=array;}
 
 
@@ -68,42 +73,13 @@ public class DataHandler extends Application {
             e.printStackTrace();
         }
     }
-    public void replaceFileWithSubpoints(){
-        try {
-            String smth;
-            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-            stringWithSubpoints=getArrayWithSubpoints();
-            for(int i=0;i<stringWithSubpoints.length;i++){
-                smth=stringWithSubpoints[i]+"\n";
-                outputStream.write(smth.getBytes());
-            }
 
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public void replaceFileWithNotes(){
-        try {
-            String smth;
-            outputStream = ctx.openFileOutput(NOTES, Context.MODE_PRIVATE);
-            stringWithNotes=getArrayWithNotes();
-            for(int i=0;i<stringWithNotes.length;i++){
-                smth=stringWithNotes[i]+"\n";
-                outputStream.write(smth.getBytes());
-            }
-
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public void appendToFileWithNotes(){
         try {
             String smth=filename+"\n";
-            outputStream = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
-            outputStream.write(smth.getBytes());
-            outputStream.close();
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(NOTES, Context.MODE_APPEND));
+            outputStreamWriter.write(smth);
+            outputStreamWriter.close();
         } catch (Exception e) {
             Log.e("TAG","CRASH w append: "+ Arrays.toString(e.getStackTrace()));
         }
@@ -128,17 +104,26 @@ public class DataHandler extends Application {
 
     public void readFromFileWithNotes(){
         try {
-            FileInputStream fis=ctx.openFileInput(NOTES);
-            InputStreamReader isr=new InputStreamReader(fis);
-            BufferedReader br=new BufferedReader(isr);
-            String s;
-            int i=0;
-            while (((s=br.readLine())!=null)) {
-                stringWithNotes[i]=s;
-                i++;
+            InputStream inputStream = ctx.openFileInput(NOTES);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+
+                int i=0;
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringWithNotes[i]=receiveString;
+                    i++;
+                }
+
+                inputStream.close();
             }
-        } catch (Exception e) {
-            Log.e("TAG","CRASH w read StackTrace: "+ Arrays.toString(e.getStackTrace()));
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
         }
 
     }
@@ -179,12 +164,36 @@ public class DataHandler extends Application {
             e.printStackTrace();
         }
     }
+    public void replaceFileWithNotes(String[] notes){
+        try {
+            int len=notes.length;
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(NOTES, Context.MODE_PRIVATE));
+            for(int i=0;i<len;i++){
+                outputStreamWriter.write(notes[i]+"\n");
+            }
+            outputStreamWriter.close();
+        } catch (Exception e) {
+            Log.e("TAG","CRASH w replaceNotes: "+ Arrays.toString(e.getStackTrace()));
+        }
+    }
 
+    public void replaceFileWithSubpoints(String[] subpoints){
+        try {
+            int len=subpoints.length;
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(filename, Context.MODE_PRIVATE));
+            for(int i=0;i<len;i++){
+                outputStreamWriter.write(subpoints[i]+"\n");
+            }
+            outputStreamWriter.close();
+        } catch (Exception e) {
+            Log.e("TAG","CRASH w replaceSubpoints: "+ Arrays.toString(e.getStackTrace()));
+        }
+    }
     public void deleteNote(String name){
         List<String> notes = new ArrayList<String>(Arrays.asList(getArrayWithNotes()));
         notes.remove(name);
-        addStringWithNotesArray(notes.toArray(stringWithNotes));
-        replaceFileWithNotes();
+        setStringWithNotesArray(notes.toArray(stringWithNotes));
+        replaceFileWithNotes(notes.toArray(stringWithNotes));
 
         try {
             ctx.deleteFile(name);
@@ -223,5 +232,12 @@ public class DataHandler extends Application {
         for(int i=0;i<len;i++)
             newArray[i]=array[i];
         return newArray;
+    }
+
+    public void setSavingName(String name){
+        NOTES=name;
+    }
+    public String getNOTES(){
+        return NOTES;
     }
 }
