@@ -1,16 +1,12 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
         DataHandler data=new DataHandler(ctx);
 
-            //data.deleteAllFiles();//TODO delete that
-
         if(data.getArrayWithNotes().length==0)
             return true;
         else
@@ -53,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public boolean canHaveMoreNotes(){
         DataHandler data=new DataHandler(ctx);
-        if(data.getArrayWithNotes().length>=30)
+        if(data.getArrayWithNotes().length>=50)
             return false;
         else
             return true;

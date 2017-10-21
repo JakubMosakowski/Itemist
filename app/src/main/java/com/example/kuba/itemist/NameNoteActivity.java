@@ -1,4 +1,4 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 
 import android.content.Context;

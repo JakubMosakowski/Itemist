@@ -1,4 +1,4 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 /**
  * Created by Kuba on 15.10.2017.

@@ -1,13 +1,7 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
-import android.provider.ContactsContract;
-import android.support.test.filters.RequiresDevice;
-import android.support.test.filters.SdkSuppress;
 import android.support.test.rule.ActivityTestRule;
-import android.test.suitebuilder.annotation.LargeTest;
-import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;

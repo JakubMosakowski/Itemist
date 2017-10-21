@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">AppLista</string>
-    <string name="title_activity_add_note">AddNoteActivity</string>
+    <string name="app_name">Itemist</string>
+    <string name="title_activity_add_note"></string>
     <string name="add_note_button">Nowa notatka</string>
     <string name="choose_note_button">Wybierz notatkę</string>
     <string name="enter_name_of_note">Wpisz nazwę</string>
@@ -29,8 +29,8 @@
     <string name="cancel">Cofnij</string>
     <string name="field_cant_be_empty">Pole nie może być puste</string>
     <string name="you_have_no_notes">Nie masz żadnych notatek!</string>
-    <string name="you_cant_have_more_notes">Nie możesz mieć więcej niż 30 notatek!</string>
-    <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 30 podpunktów!</string>
+    <string name="you_cant_have_more_notes">Nie możesz mieć więcej niż 50 notatek!</string>
+    <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 50 podpunktów!</string>
     <string name="there_is_note_with_that_name">Już masz notatkę z taką nazwą!</string>
 
 

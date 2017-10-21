@@ -1,4 +1,4 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 import android.app.Application;
 import android.content.Context;
@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,32 +23,25 @@ import java.util.List;
 public class DataHandler extends Application {
     private String filename;
     private String NOTES="notes.txt";
-    FileInputStream fis;
+
 
     private FileOutputStream outputStream;
     private Context ctx;
-    private int HOWMANY=30;
+    private final int HOWMANY=50;
     public String[] stringWithNotes=new String[HOWMANY];
     public String[] stringWithSubpoints=new String[HOWMANY];
 
     DataHandler(String fn,Context c,String[] s){
-
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
-        //createNotesFile();
-        //createSubpointFile();
-        for(int i=0;i<HOWMANY;i++)
-            stringWithNotes[i]="0";
     }
     DataHandler(Context c){
             ctx = c;
-            createNotesFile();
     }
     DataHandler(String fn,Context c){
         ctx = c;
         filename=fn;
-        createNotesFile();
     }
     public void setFilename(String file){
         filename=file;

@@ -1,4 +1,4 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 import android.app.Activity;
 import android.support.test.rule.ActivityTestRule;

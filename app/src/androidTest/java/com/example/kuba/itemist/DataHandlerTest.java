@@ -1,19 +1,14 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.test.rule.ActivityTestRule;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

@@ -1,4 +1,4 @@
-package com.example.kuba.applista;
+package com.example.kuba.itemist;
 
 
 import android.content.Context;
@@ -142,14 +142,18 @@ public class AddNoteActivity extends AppCompatActivity {
     protected void buttonAcceptOnClick(View v) {
 
         String subpoint = editTextSubpointOfTheList.getText().toString();
-
-        if (!subpoint.equals("")) {
-            Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
-            addSubpoint(v, subpoint);
-            counterUpdatePlus();
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_SHORT).show();
+        if(howManySubpoints>=50)
+            Toast.makeText(getApplicationContext(), R.string.you_cant_have_more_subpoints, Toast.LENGTH_SHORT).show();
+        else{
+            if (!subpoint.equals("")) {
+                Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
+                addSubpoint(v, subpoint);
+                counterUpdatePlus();
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.error_no_name, Toast.LENGTH_SHORT).show();
+            }
         }
+
     }
 
     protected void addSubpoint(View v, String subpoint) {
