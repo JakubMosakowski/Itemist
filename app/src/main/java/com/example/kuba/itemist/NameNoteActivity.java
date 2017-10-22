@@ -39,6 +39,13 @@ public class NameNoteActivity extends AppCompatActivity {
                 return false;
             }
         });
+        buttonNameOfNote.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                enterNote(v);
+            }
+
+        });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

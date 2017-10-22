@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +37,8 @@ public class AddNoteActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private String STRING_KEY_RESTORE = "string_key";
     private String INT_KEY = "int_key";
+    private Button buttonFinish;
+    private Button buttonSubmit;
 
 
     @Override
@@ -49,6 +52,8 @@ public class AddNoteActivity extends AppCompatActivity {
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
+        buttonFinish=(Button)findViewById(R.id.button_finish);
+        buttonSubmit=(Button)findViewById(R.id.button_accept_subpoint);
         //setters
 
         setAdapter(savedInstanceState);
@@ -63,6 +68,20 @@ public class AddNoteActivity extends AppCompatActivity {
                 }
                 return false;
             }
+        });
+        buttonFinish.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                finishNote(v);
+            }
+
+        });
+        buttonSubmit.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                buttonAcceptOnClick(v);
+            }
+
         });
     }
 
