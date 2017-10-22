@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -142,8 +143,9 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
         alert.setView(edittext);
         edittext.setText("");
+        edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         edittext.setHint(adapter.getItem(position));
-        alert.setPositiveButton(getResources().getString(R.string.confirme_edit), new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 boolean sameNameNoteExists=false;
                 for(int i=0;i<adapter.getCount();i++)

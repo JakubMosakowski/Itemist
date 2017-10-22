@@ -36,11 +36,14 @@
         android:maxLength="30"
         android:hint="@string/enter_name_of_note"
         android:imeOptions="actionDone"
-        android:inputType="textPersonName"
+
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/button_name_of_note"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:inputType="textCapSentences"
+
+        />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
+import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -194,8 +195,9 @@ public class AddNoteActivity extends AppCompatActivity {
 
         alert.setView(edittext);
         edittext.setText("");
+        edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         edittext.setHint(adapter.getItem(position));
-        alert.setPositiveButton(getResources().getString(R.string.confirme_edit), new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (!edittext.getText().toString().isEmpty()) {
                     adapter.remove(adapter.getItem(position));

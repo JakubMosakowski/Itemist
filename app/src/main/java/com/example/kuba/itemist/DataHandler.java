@@ -35,13 +35,18 @@ public class DataHandler extends Application {
         filename=fn;
         ctx=c;
         stringWithSubpoints=s;
+        createNotesFile();
+        createSubpointFile();
     }
     DataHandler(Context c){
             ctx = c;
+        createNotesFile();
     }
     DataHandler(String fn,Context c){
         ctx = c;
         filename=fn;
+        createNotesFile();
+        createSubpointFile();
     }
     public void setFilename(String file){
         filename=file;

@@ -3,17 +3,23 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -27,9 +33,13 @@ public class NoteActivity extends AppCompatActivity {
     private ListView list;
     private ArrayList<Model> modelList;
     private static final String KEY="KEY";
-    private CustomAdapter adapter;
+    private CustomAdapterWithCounter adapter;
     private View v;
     private ImageButton imgButton;
+    private TextView textView;
+    private ConstraintLayout cLayout;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,18 +47,25 @@ public class NoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
+        cLayout=(ConstraintLayout)findViewById(R.id.activity_note);
+        textView=(TextView)findViewById(R.id.counter_textView);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("");
         imgButton=(ImageButton)findViewById(R.id.plus_button);
-        v=findViewById(R.id.activity_note);
+        v=getWindow().getDecorView();
         context = getApplicationContext();
         list = (ListView) findViewById(R.id.listView);
+
         try {
             setToolbar();
         } catch (Exception e) {
-            Log.e("TAG", "setAdapter się wywalił, stack:" + Arrays.toString(e.getStackTrace()));
+            Log.e("TAG", "OnCreate się wywalił, stack:" + Arrays.toString(e.getStackTrace()));
         }
+        mySetAdapter(savedInstanceState);
 
-        setAdapter(savedInstanceState);
+
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         try {
@@ -76,9 +93,31 @@ public class NoteActivity extends AppCompatActivity {
         });
         toolbar.setTitle(intent.getStringExtra("location"));
         imgButton.setVisibility(View.VISIBLE);
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addSubpoint();
+            }
+        });
+
+
+    }
+    public void setTextView(){
+
+        int howManyChecked=0;
+        String firstNum,secondNum,wholeText;
+        int len=adapter.getCount();
+        for (int i=0;i<len;i++)
+            if(adapter.getItem(i).getEnabled())
+                howManyChecked++;
+        firstNum=String.valueOf(howManyChecked);
+        secondNum=String.valueOf(len);
+        wholeText=firstNum+"/"+secondNum;
+        textView.setText(wholeText);
     }
 
-    public void setAdapter(Bundle bundle) {
+
+    public void mySetAdapter(Bundle bundle) {
         try {
             DataHandler data = new DataHandler( toolbar.getTitle().toString(),context);
             String[] notesArray = data.getArrayWithSubpoints();
@@ -95,17 +134,17 @@ public class NoteActivity extends AppCompatActivity {
             for (int i = 0; i < howManyModels; i++)
                 modelList.add(new Model(notesArray[i], enabled[i])) ;
 
-
-            adapter = new CustomAdapter(modelList,NoteActivity.this);
+            adapter = new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
 
             list.setAdapter(adapter);
+
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     dialogDeleteEdit(position);
                 }
             });
-
+            setTextView();
         } catch (Exception e) {
             Log.e("TAG", "setAdapter się wywalił, stack:" + Arrays.toString(e.getStackTrace()));
         }
@@ -129,11 +168,12 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 modelList.remove(position);
-                adapter=new CustomAdapter(modelList,NoteActivity.this);
+                adapter=new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
                 list.setAdapter(adapter);
 
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                 updateData();
+                setTextView();
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.no), null);
@@ -147,6 +187,29 @@ public class NoteActivity extends AppCompatActivity {
 
         data.replaceFileWithSubpoints(array);
     }
+    protected boolean[] getCheckboxes(){
+        CheckBox cb;
+
+        boolean[] enabled = new boolean[adapter.getCount()];
+        for (int x = 0; x<list.getChildCount();x++){
+            cb = (CheckBox)list.getChildAt(x).findViewById(R.id.checkBox);
+            if(cb.isChecked()){
+                enabled[x] = true;
+            }
+        }
+
+        return enabled;
+    }
+    protected void clickCheckboxes(boolean[] enabled) {
+
+        CheckBox cb;
+        Toast.makeText(context, String.valueOf(list.getChildCount()+"\nArray:"+Arrays.toString(enabled)), Toast.LENGTH_SHORT).show();
+        for (int x = 0; x < list.getChildCount(); x++) {
+            cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+            if(enabled[x])
+                cb.setChecked(false);
+        }
+    }
     protected void editSubpoint(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(NoteActivity.this);
@@ -154,17 +217,24 @@ public class NoteActivity extends AppCompatActivity {
 
         alert.setView(edittext);
         edittext.setText("");
+        edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         edittext.setHint(adapter.getItem(position).getName());
-        alert.setPositiveButton(getResources().getString(R.string.confirme_edit), new DialogInterface.OnClickListener() {
+        alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (!edittext.getText().toString().isEmpty()) {
-                    Boolean enabled=adapter.getItem(position).getEnabled();
+                    boolean enabled=adapter.getItem(position).getEnabled();
                     modelList.remove(position);
                     modelList.add( position,new Model(edittext.getText().toString(),enabled));
-                    adapter=new CustomAdapter(modelList,NoteActivity.this);
+                    adapter=new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
+                    boolean[] test=getCheckboxes();
+
                     list.setAdapter(adapter);
-                    Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
+                    setTextView();
+
+                   // Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
                     updateData();
+                    clickCheckboxes(test);
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
                 }
@@ -197,5 +267,40 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    protected void addSubpoint() {
+        if (adapter.getCount() >= 50)
+            Toast.makeText(getApplicationContext(), R.string.you_cant_have_more_subpoints, Toast.LENGTH_SHORT).show();
+        else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            final EditText edittext = new EditText(NoteActivity.this);
+            alert.setTitle(getResources().getString(R.string.add_subpoint));
+
+            alert.setView(edittext);
+            edittext.setText("");
+            edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+            edittext.setHint(getResources().getString(R.string.enter_content_of_subpoint));
+            alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                    if (!edittext.getText().toString().isEmpty()) {
+                       updateAdapter(edittext.getText().toString());
+                        setTextView();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            alert.setNegativeButton(getResources().getString(R.string.cancel), null);
+            alert.show();
+
+        }
+    }
+    protected void updateAdapter(String subpointName){
+        modelList.add(list.getCount(), new Model(subpointName, false));
+        adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this,textView);
+        list.setAdapter(adapter);
+        Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
+        updateData();
     }
 }

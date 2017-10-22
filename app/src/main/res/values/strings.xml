@@ -25,13 +25,14 @@
     <string name="you_have_chosen">Wybrałeś:\n</string>
     <string name="are_you_sure">Jesteś pewien?</string>
     <string name="correct">Popraw:</string>
-    <string name="confirme_edit">Zatwierdź</string>
+    <string name="confirm">Zatwierdź</string>
     <string name="cancel">Cofnij</string>
     <string name="field_cant_be_empty">Pole nie może być puste</string>
     <string name="you_have_no_notes">Nie masz żadnych notatek!</string>
     <string name="you_cant_have_more_notes">Nie możesz mieć więcej niż 50 notatek!</string>
     <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 50 podpunktów!</string>
     <string name="there_is_note_with_that_name">Już masz notatkę z taką nazwą!</string>
+    <string name="add_subpoint">Dodaj podpunkt:</string>
 
 
 </resources>
