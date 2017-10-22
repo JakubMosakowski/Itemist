@@ -11,41 +11,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends ArrayAdapter<Model>  {
+public class CustomAdapter extends ArrayAdapter<Model> {
 
     public ArrayList<Model> modelArray;
     Context context;
 
 
-
     public CustomAdapter(ArrayList<Model> data, Context context) {
         super(context, R.layout.row_for_subpoints, data);
         this.modelArray = data;
-        this.context=context;
+        this.context = context;
 
     }
 
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final Model model=getItem(position);
-        if(convertView==null){
+        final Model model = getItem(position);
+        if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
             TextView name = (TextView) convertView.findViewById(R.id.textView);
             CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
 
             name.setText(model.getName());
-            if (model.getEnabled() == true){
+            if (model.getEnabled() == true) {
                 cb.setChecked(true);
-            } else{
+            } else {
                 cb.setChecked(false);
             }
 
@@ -54,7 +50,6 @@ public class CustomAdapter extends ArrayAdapter<Model>  {
         return convertView;
 
     }
-
 
 
 }

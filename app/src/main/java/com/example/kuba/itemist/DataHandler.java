@@ -2,7 +2,7 @@ package com.example.kuba.itemist;
 
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,46 +22,54 @@ import java.util.List;
 
 public class DataHandler extends Application {
     private String filename;
-    private String NOTES="notes.txt";
+    private String NOTES = "notes.txt";
 
 
     private FileOutputStream outputStream;
     private Context ctx;
-    private final int HOWMANY=50;
-    public String[] stringWithNotes=new String[HOWMANY];
-    public String[] stringWithSubpoints=new String[HOWMANY];
+    private final int HOWMANY = 50;
+    public String[] stringWithNotes = new String[HOWMANY];
+    public String[] stringWithSubpoints = new String[HOWMANY];
 
-    DataHandler(String fn,Context c,String[] s){
-        filename=fn;
-        ctx=c;
-        stringWithSubpoints=s;
-        createNotesFile();
-        createSubpointFile();
-    }
-    DataHandler(Context c){
-            ctx = c;
-        createNotesFile();
-    }
-    DataHandler(String fn,Context c){
+    DataHandler(String fn, Context c, String[] s) {
+        filename = fn;
         ctx = c;
-        filename=fn;
+        stringWithSubpoints = s;
         createNotesFile();
         createSubpointFile();
     }
-    public void setFilename(String file){
-        filename=file;
+
+    DataHandler(Context c) {
+        ctx = c;
+        createNotesFile();
     }
-    public void setStringWithSubpointsArray(String[] array){stringWithSubpoints=array;}
-    public void setStringWithNotesArray(String[] array)
-    {stringWithNotes=array;}
+
+    DataHandler(String fn, Context c) {
+        ctx = c;
+        filename = fn;
+        createNotesFile();
+        createSubpointFile();
+    }
+
+    public void setFilename(String file) {
+        filename = file;
+    }
+
+    public void setStringWithSubpointsArray(String[] array) {
+        stringWithSubpoints = array;
+    }
+
+    public void setStringWithNotesArray(String[] array) {
+        stringWithNotes = array;
+    }
 
 
-    public void appendToFileWithSubpoints(){
+    public void appendToFileWithSubpoints() {
         try {
             String smth;
             outputStream = ctx.openFileOutput(filename, Context.MODE_APPEND);
-            for(int i=0;i<stringWithSubpoints.length;i++){
-                smth=stringWithSubpoints[i]+"\n";
+            for (int i = 0; i < stringWithSubpoints.length; i++) {
+                smth = stringWithSubpoints[i] + "\n";
                 outputStream.write(smth.getBytes());
             }
 
@@ -71,26 +79,26 @@ public class DataHandler extends Application {
         }
     }
 
-    public void appendToFileWithNotes(){
+    public void appendToFileWithNotes() {
         try {
-            String smth=filename+"\n";
+            String smth = filename + "\n";
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(NOTES, Context.MODE_APPEND));
             outputStreamWriter.write(smth);
             outputStreamWriter.close();
         } catch (Exception e) {
-            Log.e("TAG","CRASH w append: "+ Arrays.toString(e.getStackTrace()));
+
         }
     }
 
-    public void readFromFileWithSubpoints(){
+    public void readFromFileWithSubpoints() {
         try {
-            FileInputStream fis=ctx.openFileInput(filename);
-            InputStreamReader isr=new InputStreamReader(fis);
-            BufferedReader br=new BufferedReader(isr);
-            int i=0;
+            FileInputStream fis = ctx.openFileInput(filename);
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            int i = 0;
             String line;
             while ((line = br.readLine()) != null) {
-                stringWithSubpoints[i]=line;
+                stringWithSubpoints[i] = line;
                 i++;
             }
 
@@ -99,94 +107,92 @@ public class DataHandler extends Application {
         }
     }
 
-    public void readFromFileWithNotes(){
+    public void readFromFileWithNotes() {
         try {
             InputStream inputStream = ctx.openFileInput(NOTES);
 
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
 
-                int i=0;
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringWithNotes[i]=receiveString;
+                int i = 0;
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    stringWithNotes[i] = receiveString;
                     i++;
                 }
 
                 inputStream.close();
             }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
+        } catch (FileNotFoundException e) {
         } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
         }
 
     }
 
-    public String[] getArrayWithSubpoints(){
+    public String[] getArrayWithSubpoints() {
         readFromFileWithSubpoints();
-        String[] array=stringWithSubpoints;
-        array=trimEmptyArray(array);
+        String[] array = stringWithSubpoints;
+        array = trimEmptyArray(array);
         return array;
     }
 
-    public String[] getArrayWithNotes(){
+    public String[] getArrayWithNotes() {
         readFromFileWithNotes();
-        String[] array=stringWithNotes;
-        array=trimEmptyArray(array);
+        String[] array = stringWithNotes;
+        array = trimEmptyArray(array);
         return array;
     }
 
-    public void createNotesFile(){
+    public void createNotesFile() {
 
         try {
 
-                FileOutputStream fileOs = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
-                fileOs.close();
+            FileOutputStream fileOs = ctx.openFileOutput(NOTES, Context.MODE_APPEND);
+            fileOs.close();
 
         } catch (Exception e) {
-            Log.e("TAG","CRASH w createNote "+ Arrays.toString(e.getStackTrace()));
+
 
         }
     }
-    public void createSubpointFile(){
+
+    public void createSubpointFile() {
         FileInputStream inputStream = null;
         try {
-            FileOutputStream fOut = ctx.openFileOutput(filename,Context.MODE_APPEND);
+            FileOutputStream fOut = ctx.openFileOutput(filename, Context.MODE_APPEND);
             fOut.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public void replaceFileWithNotes(String[] notes){
+
+    public void replaceFileWithNotes(String[] notes) {
         try {
-            int len=notes.length;
+            int len = notes.length;
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(NOTES, Context.MODE_PRIVATE));
-            for(int i=0;i<len;i++){
-                outputStreamWriter.write(notes[i]+"\n");
+            for (int i = 0; i < len; i++) {
+                outputStreamWriter.write(notes[i] + "\n");
             }
             outputStreamWriter.close();
         } catch (Exception e) {
-            Log.e("TAG","CRASH w replaceNotes: "+ Arrays.toString(e.getStackTrace()));
         }
     }
 
-    public void replaceFileWithSubpoints(String[] subpoints){
+    public void replaceFileWithSubpoints(String[] subpoints) {
         try {
-            int len=subpoints.length;
+            int len = subpoints.length;
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(filename, Context.MODE_PRIVATE));
-            for(int i=0;i<len;i++){
-                outputStreamWriter.write(subpoints[i]+"\n");
+            for (int i = 0; i < len; i++) {
+                outputStreamWriter.write(subpoints[i] + "\n");
             }
             outputStreamWriter.close();
         } catch (Exception e) {
-            Log.e("TAG","CRASH w replaceSubpoints: "+ Arrays.toString(e.getStackTrace()));
         }
     }
-    public void deleteNote(String name){
+
+    public void deleteNote(String name) {
         List<String> notes = new ArrayList<String>(Arrays.asList(getArrayWithNotes()));
         notes.remove(name);
         setStringWithNotesArray(notes.toArray(stringWithNotes));
@@ -196,45 +202,48 @@ public class DataHandler extends Application {
             ctx.deleteFile(name);
 
         } catch (Exception e) {
-            Log.e("TAG", "Cos sie nie usuwa:" + Arrays.toString(e.getStackTrace()));
         }
     }
+
     public void deleteAllFiles() {
-        int len=getArrayWithNotes().length;
-        String[] array=getArrayWithNotes();
+        int len = getArrayWithNotes().length;
+        String[] array = getArrayWithNotes();
         ctx.deleteFile(NOTES);
 
-        for(int i=0;i<len;i++){
+        for (int i = 0; i < len; i++) {
             File f = ctx.getFilesDir();
             try {
-                f=new File(f.getCanonicalPath()+array[i]);
+                f = new File(f.getCanonicalPath() + array[i]);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(f.exists() && !f.isDirectory())
+            if (f.exists() && !f.isDirectory())
                 ctx.deleteFile(array[i]);
         }
 
     }
-    public String getFilename(){
+
+    public String getFilename() {
         return this.filename;
     }
-    public String[] trimEmptyArray(String[] array){
-        int len=0;
-        for(int i=0;i<array.length;i++)
-            if(array[i]!=null)
-                if(!array[i].equals("")&&!array[i].equals("0")&&!array[i].equals("null"))
+
+    public String[] trimEmptyArray(String[] array) {
+        int len = 0;
+        for (int i = 0; i < array.length; i++)
+            if (array[i] != null)
+                if (!array[i].equals("") && !array[i].equals("0") && !array[i].equals("null"))
                     len++;
-        String[] newArray=new String[len];
-        for(int i=0;i<len;i++)
-            newArray[i]=array[i];
+        String[] newArray = new String[len];
+        for (int i = 0; i < len; i++)
+            newArray[i] = array[i];
         return newArray;
     }
 
-    public void setSavingName(String name){
-        NOTES=name;
+    public void setSavingName(String name) {
+        NOTES = name;
     }
-    public String getNOTES(){
+
+    public String getNOTES() {
         return NOTES;
     }
 }

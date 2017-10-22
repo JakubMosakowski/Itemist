@@ -4,11 +4,10 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -21,8 +20,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 
 
 public class AddNoteActivity extends AppCompatActivity {
@@ -35,8 +34,8 @@ public class AddNoteActivity extends AppCompatActivity {
     private int howManySubpoints = 0;
     private Context context;
     private Toolbar toolbar;
-    private String STRING_KEY_RESTORE="string_key";
-    private String INT_KEY="int_key";
+    private String STRING_KEY_RESTORE = "string_key";
+    private String INT_KEY = "int_key";
 
 
     @Override
@@ -71,19 +70,19 @@ public class AddNoteActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        ArrayList<String> stringList=new ArrayList<String>();
-        for(int i=0 ; i<adapter.getCount() ; i++){
+        ArrayList<String> stringList = new ArrayList<String>();
+        for (int i = 0; i < adapter.getCount(); i++) {
             stringList.add(adapter.getItem(i));
         }
-        outState.putInt(INT_KEY,howManySubpoints);
+        outState.putInt(INT_KEY, howManySubpoints);
         outState.putStringArrayList(STRING_KEY_RESTORE, stringList);
     }
 
 
-    public void setAdapter(Bundle bundle){
+    public void setAdapter(Bundle bundle) {
         ArrayList<String> subpointsL = new ArrayList<String>();
-        if(bundle!=null) {
-            subpointsL=bundle.getStringArrayList(STRING_KEY_RESTORE);
+        if (bundle != null) {
+            subpointsL = bundle.getStringArrayList(STRING_KEY_RESTORE);
         }
 
         adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
@@ -95,6 +94,7 @@ public class AddNoteActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         View view = getCurrentFocus();
@@ -108,7 +108,8 @@ public class AddNoteActivity extends AppCompatActivity {
         }
         return super.dispatchTouchEvent(ev);
     }
-    public void setToolbar(){
+
+    public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,19 +134,20 @@ public class AddNoteActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.no, null)
                 .show();
     }
-    public void setCounter(Bundle bundle){
-        if(bundle!=null)
-            howManySubpoints=bundle.getInt(INT_KEY);
-        String container =getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints);
+
+    public void setCounter(Bundle bundle) {
+        if (bundle != null)
+            howManySubpoints = bundle.getInt(INT_KEY);
+        String container = getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints);
         textViewCounter.setText(container);
     }
 
     protected void buttonAcceptOnClick(View v) {
 
         String subpoint = editTextSubpointOfTheList.getText().toString();
-        if(howManySubpoints>=50)
+        if (howManySubpoints >= 50)
             Toast.makeText(getApplicationContext(), R.string.you_cant_have_more_subpoints, Toast.LENGTH_SHORT).show();
-        else{
+        else {
             if (!subpoint.equals("")) {
                 Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
                 addSubpoint(v, subpoint);
@@ -237,11 +239,11 @@ public class AddNoteActivity extends AppCompatActivity {
         builder.show();
     }
 
-    protected void finishNote(View v){
-        String[] array=new String[adapter.getCount()];
-        for(int i=0;i<adapter.getCount();i++)
-            array[i]=adapter.getItem(i);
-        DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
+    protected void finishNote(View v) {
+        String[] array = new String[adapter.getCount()];
+        for (int i = 0; i < adapter.getCount(); i++)
+            array[i] = adapter.getItem(i);
+        DataHandler data = new DataHandler(toolbar.getTitle().toString(), context, array);
 
         data.appendToFileWithNotes();
         data.appendToFileWithSubpoints();

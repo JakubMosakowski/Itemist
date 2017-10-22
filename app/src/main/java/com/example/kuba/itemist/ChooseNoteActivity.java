@@ -3,12 +3,11 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,7 +17,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ChooseNoteActivity extends AppCompatActivity {
     private ArrayAdapter<String> adapter;
@@ -34,39 +32,39 @@ public class ChooseNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_note);
-        imgButton=(ImageButton)findViewById(R.id.plus_button);
+        imgButton = (ImageButton) findViewById(R.id.plus_button);
         context = getApplicationContext();
-        toolbar=(Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         list = (ListView) findViewById(R.id.listView);
-        v=findViewById(R.id.activity_choose_note);
+        v = findViewById(R.id.activity_choose_note);
         setToolbar();
-        try{
+        try {
             enterNotesToListView();
-        }
-        catch(Exception e){
-            Log.e("TAG","CRASHw onCreate StackTrace: "+ Arrays.toString(e.getStackTrace()));
+        } catch (Exception e) {
+
         }
 
 
     }
-    public void enterNotesToListView(){
-        DataHandler data=new DataHandler(context);
+
+    public void enterNotesToListView() {
+        DataHandler data = new DataHandler(context);
 
         ArrayList<String> notes = new ArrayList<String>();
-        String [] notesArray=data.getArrayWithNotes();
+        String[] notesArray = data.getArrayWithNotes();
         int count = notesArray.length;
-        Log.d("TAG", String.valueOf(count));
 
         for (int i = 0; i < count; i++) {
              /*====== this is where listView is populated =====*/
-            if(notesArray[i] != null) {
+            if (notesArray[i] != null) {
                 notes.add(notesArray[i]);
             }
         }
         setAdapter(notes);
     }
-    public void setAdapter(ArrayList<String> notes){
+
+    public void setAdapter(ArrayList<String> notes) {
         adapter = new ArrayAdapter<String>(this, R.layout.row_for_notes_names, notes);
 
         list = (ListView) findViewById(R.id.listView);
@@ -86,7 +84,8 @@ public class ChooseNoteActivity extends AppCompatActivity {
             }
         });
     }
-    public void setToolbar(){
+
+    public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +93,8 @@ public class ChooseNoteActivity extends AppCompatActivity {
             }
         });
     }
-    public void goToNote(int position){
+
+    public void goToNote(int position) {
         Intent intent = new Intent(ChooseNoteActivity.this, NoteActivity.class);
         intent.putExtra("location", adapter.getItem(position));
         ChooseNoteActivity.this.startActivity(intent);
@@ -116,26 +116,29 @@ public class ChooseNoteActivity extends AppCompatActivity {
         builder.setNegativeButton(getResources().getString(R.string.no), null);
         builder.show();
     }
-    protected void updateDataDelete(int position){
-        String noteName=adapter.getItem(position);
-        DataHandler data=new DataHandler(noteName,context);
-        subpoints=data.getArrayWithSubpoints();
+
+    protected void updateDataDelete(int position) {
+        String noteName = adapter.getItem(position);
+        DataHandler data = new DataHandler(noteName, context);
+        subpoints = data.getArrayWithSubpoints();
         data.deleteNote(noteName);
     }
-    protected void updateDataEdit(int position){
-        String noteName=adapter.getItem(position);
-        DataHandler data=new DataHandler(noteName,context);
-        int len=adapter.getCount();
 
-        String [] notes=new String[len];
+    protected void updateDataEdit(int position) {
+        String noteName = adapter.getItem(position);
+        DataHandler data = new DataHandler(noteName, context);
+        int len = adapter.getCount();
+
+        String[] notes = new String[len];
         data.setStringWithSubpointsArray(subpoints);
         data.replaceFileWithSubpoints(subpoints);
-        for(int i=0;i<len;i++)
-            notes[i]=adapter.getItem(i);
+        for (int i = 0; i < len; i++)
+            notes[i] = adapter.getItem(i);
         data.setStringWithNotesArray(notes);
         data.replaceFileWithNotes(notes);
 
     }
+
     protected void editNote(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(ChooseNoteActivity.this);
@@ -147,21 +150,21 @@ public class ChooseNoteActivity extends AppCompatActivity {
         edittext.setHint(adapter.getItem(position));
         alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                boolean sameNameNoteExists=false;
-                for(int i=0;i<adapter.getCount();i++)
-                    if(adapter.getItem(i).equals(edittext.getText().toString()))
-                        sameNameNoteExists=true;
+                boolean sameNameNoteExists = false;
+                for (int i = 0; i < adapter.getCount(); i++)
+                    if (adapter.getItem(i).equals(edittext.getText().toString()))
+                        sameNameNoteExists = true;
 
-                if (!edittext.getText().toString().isEmpty() && sameNameNoteExists==false) {
+                if (!edittext.getText().toString().isEmpty() && sameNameNoteExists == false) {
                     updateDataDelete(position);
                     adapter.remove(adapter.getItem(position));
-                    adapter.insert(edittext.getText().toString(),position);
+                    adapter.insert(edittext.getText().toString(), position);
                     updateDataEdit(position);
                     list.setAdapter(adapter);
                     Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
-                } else if(edittext.getText().toString().isEmpty()){
+                } else if (edittext.getText().toString().isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
-                }else
+                } else
                     Toast.makeText(getApplicationContext(), R.string.there_is_note_with_that_name, Toast.LENGTH_SHORT).show();
             }
         });

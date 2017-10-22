@@ -3,19 +3,15 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -32,13 +28,12 @@ public class NoteActivity extends AppCompatActivity {
     private Context context;
     private ListView list;
     private ArrayList<Model> modelList;
-    private static final String KEY="KEY";
+    private static final String KEY = "KEY";
     private CustomAdapterWithCounter adapter;
     private View v;
     private ImageButton imgButton;
     private TextView textView;
     private ConstraintLayout cLayout;
-
 
 
     @Override
@@ -47,19 +42,18 @@ public class NoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_note);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
-        cLayout=(ConstraintLayout)findViewById(R.id.activity_note);
-        textView=(TextView)findViewById(R.id.counter_textView);
+        cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
+        textView = (TextView) findViewById(R.id.counter_textView);
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
-        imgButton=(ImageButton)findViewById(R.id.plus_button);
-        v=getWindow().getDecorView();
+        imgButton = (ImageButton) findViewById(R.id.plus_button);
+        v = getWindow().getDecorView();
         context = getApplicationContext();
         list = (ListView) findViewById(R.id.listView);
 
         try {
             setToolbar();
         } catch (Exception e) {
-            Log.e("TAG", "OnCreate się wywalił, stack:" + Arrays.toString(e.getStackTrace()));
         }
         mySetAdapter(savedInstanceState);
 
@@ -72,15 +66,14 @@ public class NoteActivity extends AppCompatActivity {
             super.onSaveInstanceState(outState);
             CheckBox cb;
             boolean[] enabled = new boolean[adapter.getCount()];
-            for (int x = 0; x<list.getChildCount();x++){
-                cb = (CheckBox)list.getChildAt(x).findViewById(R.id.checkBox);
-                if(cb.isChecked()){
+            for (int x = 0; x < list.getChildCount(); x++) {
+                cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+                if (cb.isChecked()) {
                     enabled[x] = true;
                 }
             }
             outState.putBooleanArray(KEY, enabled);
-        }catch(Exception e){
-            Log.e("TAG", "OnSaveInstanceSieWywalil" + Arrays.toString(e.getStackTrace()));
+        } catch (Exception e) {
         }
     }
 
@@ -102,39 +95,40 @@ public class NoteActivity extends AppCompatActivity {
 
 
     }
-    public void setTextView(){
 
-        int howManyChecked=0;
-        String firstNum,secondNum,wholeText;
-        int len=adapter.getCount();
-        for (int i=0;i<len;i++)
-            if(adapter.getItem(i).getEnabled())
+    public void setTextView() {
+
+        int howManyChecked = 0;
+        String firstNum, secondNum, wholeText;
+        int len = adapter.getCount();
+        for (int i = 0; i < len; i++)
+            if (adapter.getItem(i).getEnabled())
                 howManyChecked++;
-        firstNum=String.valueOf(howManyChecked);
-        secondNum=String.valueOf(len);
-        wholeText=firstNum+"/"+secondNum;
+        firstNum = String.valueOf(howManyChecked);
+        secondNum = String.valueOf(len);
+        wholeText = firstNum + "/" + secondNum;
         textView.setText(wholeText);
     }
 
 
     public void mySetAdapter(Bundle bundle) {
         try {
-            DataHandler data = new DataHandler( toolbar.getTitle().toString(),context);
+            DataHandler data = new DataHandler(toolbar.getTitle().toString(), context);
             String[] notesArray = data.getArrayWithSubpoints();
             int count = notesArray.length;
-            int howManyModels = setNumberOfModels(notesArray,count);
-            boolean[] enabled=new boolean[howManyModels];
+            int howManyModels = setNumberOfModels(notesArray, count);
+            boolean[] enabled = new boolean[howManyModels];
 
 
-            if(bundle!=null) {
-                enabled=bundle.getBooleanArray(KEY);
-           }
+            if (bundle != null) {
+                enabled = bundle.getBooleanArray(KEY);
+            }
 
-            modelList=new ArrayList<Model>();
+            modelList = new ArrayList<Model>();
             for (int i = 0; i < howManyModels; i++)
-                modelList.add(new Model(notesArray[i], enabled[i])) ;
+                modelList.add(new Model(notesArray[i], enabled[i]));
 
-            adapter = new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
+            adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
 
             list.setAdapter(adapter);
 
@@ -146,12 +140,11 @@ public class NoteActivity extends AppCompatActivity {
             });
             setTextView();
         } catch (Exception e) {
-            Log.e("TAG", "setAdapter się wywalił, stack:" + Arrays.toString(e.getStackTrace()));
         }
     }
 
-    public int setNumberOfModels(String[] array,int len){
-        int howManyModels=0;
+    public int setNumberOfModels(String[] array, int len) {
+        int howManyModels = 0;
         for (int i = 0; i < len; i++) {
             if (array[i] != null) {
                 howManyModels++;
@@ -168,7 +161,7 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 modelList.remove(position);
-                adapter=new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
+                adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
                 list.setAdapter(adapter);
 
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
@@ -179,37 +172,41 @@ public class NoteActivity extends AppCompatActivity {
         builder.setNegativeButton(getResources().getString(R.string.no), null);
         builder.show();
     }
-    protected void updateData(){
-        String[] array=new String[adapter.getCount()];
-        for(int i=0;i<adapter.getCount();i++)
-            array[i]=adapter.getItem(i).getName();
-        DataHandler data=new DataHandler(toolbar.getTitle().toString(),context,array);
+
+    protected void updateData() {
+        String[] array = new String[adapter.getCount()];
+        for (int i = 0; i < adapter.getCount(); i++)
+            array[i] = adapter.getItem(i).getName();
+        DataHandler data = new DataHandler(toolbar.getTitle().toString(), context, array);
 
         data.replaceFileWithSubpoints(array);
     }
-    protected boolean[] getCheckboxes(){
+
+    protected boolean[] getCheckboxes() {
         CheckBox cb;
 
         boolean[] enabled = new boolean[adapter.getCount()];
-        for (int x = 0; x<list.getChildCount();x++){
-            cb = (CheckBox)list.getChildAt(x).findViewById(R.id.checkBox);
-            if(cb.isChecked()){
+        for (int x = 0; x < list.getChildCount(); x++) {
+            cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+            if (cb.isChecked()) {
                 enabled[x] = true;
             }
         }
 
         return enabled;
     }
+
     protected void clickCheckboxes(boolean[] enabled) {
 
         CheckBox cb;
-        Toast.makeText(context, String.valueOf(list.getChildCount()+"\nArray:"+Arrays.toString(enabled)), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, String.valueOf(list.getChildCount() + "\nArray:" + Arrays.toString(enabled)), Toast.LENGTH_SHORT).show();
         for (int x = 0; x < list.getChildCount(); x++) {
             cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
-            if(enabled[x])
+            if (enabled[x])
                 cb.setChecked(false);
         }
     }
+
     protected void editSubpoint(final int position) {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         final EditText edittext = new EditText(NoteActivity.this);
@@ -222,17 +219,17 @@ public class NoteActivity extends AppCompatActivity {
         alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 if (!edittext.getText().toString().isEmpty()) {
-                    boolean enabled=adapter.getItem(position).getEnabled();
+                    boolean enabled = adapter.getItem(position).getEnabled();
                     modelList.remove(position);
-                    modelList.add( position,new Model(edittext.getText().toString(),enabled));
-                    adapter=new CustomAdapterWithCounter(modelList,NoteActivity.this,textView);
-                    boolean[] test=getCheckboxes();
+                    modelList.add(position, new Model(edittext.getText().toString(), enabled));
+                    adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+                    boolean[] test = getCheckboxes();
 
                     list.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     setTextView();
 
-                   // Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
                     updateData();
                     clickCheckboxes(test);
                 } else {
@@ -284,7 +281,7 @@ public class NoteActivity extends AppCompatActivity {
             alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     if (!edittext.getText().toString().isEmpty()) {
-                       updateAdapter(edittext.getText().toString());
+                        updateAdapter(edittext.getText().toString());
                         setTextView();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
@@ -296,9 +293,10 @@ public class NoteActivity extends AppCompatActivity {
 
         }
     }
-    protected void updateAdapter(String subpointName){
+
+    protected void updateAdapter(String subpointName) {
         modelList.add(list.getCount(), new Model(subpointName, false));
-        adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this,textView);
+        adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
         updateData();

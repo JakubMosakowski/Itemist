@@ -4,13 +4,13 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +51,7 @@ public class NameNoteActivity extends AppCompatActivity {
         String nameOfNote = editTextNameOfNote.getText().toString();
 
         if (!nameOfNote.equals("")) {
-            nameOfNote= changeNameOfNote(nameOfNote);
+            nameOfNote = changeNameOfNote(nameOfNote);
             Intent intent = new Intent(NameNoteActivity.this, AddNoteActivity.class);
             intent.putExtra("location", nameOfNote);
             NameNoteActivity.this.startActivity(intent);
@@ -66,14 +66,14 @@ public class NameNoteActivity extends AppCompatActivity {
         DataHandler data = new DataHandler(context);
         String[] notes = data.getArrayWithNotes();
 
-            for (int i = 0; i < notes.length; i++) {
-                if (notes[i]!=null) {
-                    if (notes[i].equals(title)) {
-                        title = title + "(2)";
-                        i = 0;
-                    }
+        for (int i = 0; i < notes.length; i++) {
+            if (notes[i] != null) {
+                if (notes[i].equals(title)) {
+                    title = title + "(2)";
+                    i = 0;
                 }
             }
+        }
 
 
         return title;
