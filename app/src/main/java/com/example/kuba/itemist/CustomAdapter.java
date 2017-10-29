@@ -35,8 +35,8 @@ public class CustomAdapter extends ArrayAdapter<Model> {
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
-            TextView name = (TextView) convertView.findViewById(R.id.textView);
-            CheckBox cb = (CheckBox) convertView.findViewById(R.id.checkBox);
+            TextView name = convertView.findViewById(R.id.textView);
+            CheckBox cb = convertView.findViewById(R.id.checkBox);
 
             name.setText(model.getName());
             if (model.getEnabled() == true) {

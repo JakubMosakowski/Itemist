@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Itemist</string>
-    <string name="title_activity_add_note"></string>
     <string name="add_note_button">Nowa notatka</string>
     <string name="choose_note_button">Wybierz notatkę</string>
     <string name="enter_name_of_note">Wpisz nazwę</string>

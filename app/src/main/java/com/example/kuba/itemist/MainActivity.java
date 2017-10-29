@@ -42,18 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
         DataHandler data = new DataHandler(ctx);
 
-        if (data.getArrayWithNotes().length == 0)
-            return true;
-        else
-            return false;
+        return data.getArrayWithNotes().length == 0;
     }
 
     public boolean canHaveMoreNotes() {
         DataHandler data = new DataHandler(ctx);
-        if (data.getArrayWithNotes().length >= 50)
-            return false;
-        else
-            return true;
+        return data.getArrayWithNotes().length < 50;
     }
 
 }

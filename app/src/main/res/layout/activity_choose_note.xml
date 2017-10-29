@@ -29,6 +29,7 @@
             android:fadeScrollbars="false"
             android:transcriptMode="alwaysScroll"
             android:divider="@color/colorPrimary"
-            android:dividerHeight="5px"/>
+            android:dividerHeight="5dp"
+            tools:ignore="PxUsage" />
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

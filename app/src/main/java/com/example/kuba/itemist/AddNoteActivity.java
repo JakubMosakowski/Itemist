@@ -215,7 +215,7 @@ public class AddNoteActivity extends AppCompatActivity {
         alert.setTitle(getResources().getString(R.string.edit));
 
         alert.setView(edittext);
-        edittext.setText("");
+        edittext.setText(adapter.getItem(position));
         edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         edittext.setHint(adapter.getItem(position));
         alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {

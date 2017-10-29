@@ -67,7 +67,7 @@ public class NoteActivity extends AppCompatActivity {
             CheckBox cb;
             boolean[] enabled = new boolean[adapter.getCount()];
             for (int x = 0; x < list.getChildCount(); x++) {
-                cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+                cb = list.getChildAt(x).findViewById(R.id.checkBox);
                 if (cb.isChecked()) {
                     enabled[x] = true;
                 }
@@ -187,7 +187,7 @@ public class NoteActivity extends AppCompatActivity {
 
         boolean[] enabled = new boolean[adapter.getCount()];
         for (int x = 0; x < list.getChildCount(); x++) {
-            cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+            cb = list.getChildAt(x).findViewById(R.id.checkBox);
             if (cb.isChecked()) {
                 enabled[x] = true;
             }
@@ -199,9 +199,8 @@ public class NoteActivity extends AppCompatActivity {
     protected void clickCheckboxes(boolean[] enabled) {
 
         CheckBox cb;
-        Toast.makeText(context, String.valueOf(list.getChildCount() + "\nArray:" + Arrays.toString(enabled)), Toast.LENGTH_SHORT).show();
         for (int x = 0; x < list.getChildCount(); x++) {
-            cb = (CheckBox) list.getChildAt(x).findViewById(R.id.checkBox);
+            cb = list.getChildAt(x).findViewById(R.id.checkBox);
             if (enabled[x])
                 cb.setChecked(false);
         }
@@ -213,7 +212,7 @@ public class NoteActivity extends AppCompatActivity {
         alert.setTitle(getResources().getString(R.string.correct));
 
         alert.setView(edittext);
-        edittext.setText("");
+        edittext.setText(adapter.getItem(position).getName());
         edittext.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         edittext.setHint(adapter.getItem(position).getName());
         alert.setPositiveButton(getResources().getString(R.string.confirm), new DialogInterface.OnClickListener() {
@@ -229,7 +228,7 @@ public class NoteActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     setTextView();
 
-                    // Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
+
                     updateData();
                     clickCheckboxes(test);
                 } else {
