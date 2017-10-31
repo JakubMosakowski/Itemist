@@ -16,6 +16,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+        if (intent.getStringExtra("TAG") != null) {
+            if (intent.getStringExtra("TAG").equals("noteAdded"))
+                Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
+        }
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         ctx = getApplicationContext();
         toolbar.setNavigationIcon(null);
@@ -39,9 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public boolean notesAreEmpty() {
-
         DataHandler data = new DataHandler(ctx);
-
         return data.getArrayWithNotes().length == 0;
     }
 

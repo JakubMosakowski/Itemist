@@ -269,8 +269,9 @@ public class AddNoteActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+        intent.putExtra("TAG","noteAdded");
         startActivity(intent);
-        Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
+
 
     }
 }

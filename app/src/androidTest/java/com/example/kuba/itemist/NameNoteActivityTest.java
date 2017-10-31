@@ -27,22 +27,22 @@ public class NameNoteActivityTest {
     public void testButton() {
         Log.d("MainActivityTesting", "Check if activity has both buttons with correct subtitle.");
         Activity activity = activityTestRule.getActivity();
-        View v=activity.findViewById(R.id.activity_name_note);
-        Button one=v.findViewById(R.id.button_name_of_note);
+        View v = activity.findViewById(R.id.activity_name_note);
+        Button one = v.findViewById(R.id.button_name_of_note);
 
-        assertNotNull("Button don't exist",one);
-        assertEquals("Wrong subtitle for  button",v.getResources().getString(R.string.add_name_of_note_button),one.getText());
+        assertNotNull("Button don't exist", one);
+        assertEquals("Wrong subtitle for  button", v.getResources().getString(R.string.add_name_of_note_button), one.getText());
     }
 
     @Test
     public void testEditText() {
         Log.d("MainActivityTesting", "Check if activity has both buttons with correct subtitle.");
         Activity activity = activityTestRule.getActivity();
-        View v=activity.findViewById(R.id.activity_name_note);
-        EditText one=v.findViewById(R.id.editText_subpoint_of_the_list);
+        View v = activity.findViewById(R.id.activity_name_note);
+        EditText one = v.findViewById(R.id.editText_subpoint_of_the_list);
 
-        assertNotNull("EditText don't exist",one);
-        assertEquals("Wrong hint for EditText",v.getResources().getString(R.string.enter_name_of_note),one.getHint());
+        assertNotNull("EditText don't exist", one);
+        assertEquals("Wrong hint for EditText", v.getResources().getString(R.string.enter_name_of_note), one.getHint());
     }
 
     @Test//TODO finish testActivityChangeToAddNote

@@ -175,35 +175,11 @@ public class NoteActivity extends AppCompatActivity {
 
     protected void updateData() {
         String[] array = new String[adapter.getCount()];
-        for (int i = 0; i < adapter.getCount(); i++)
-            array[i] = adapter.getItem(i).getName();
+        for (int i = 0; i < modelList.size(); i++)
+            array[i] = modelList.get(i).getName();
         DataHandler data = new DataHandler(toolbar.getTitle().toString(), context, array);
 
         data.replaceFileWithSubpoints(array);
-    }
-
-    protected boolean[] getCheckboxes() {
-        CheckBox cb;
-
-        boolean[] enabled = new boolean[adapter.getCount()];
-        for (int x = 0; x < list.getChildCount(); x++) {
-            cb = list.getChildAt(x).findViewById(R.id.checkBox);
-            if (cb.isChecked()) {
-                enabled[x] = true;
-            }
-        }
-
-        return enabled;
-    }
-
-    protected void clickCheckboxes(boolean[] enabled) {
-
-        CheckBox cb;
-        for (int x = 0; x < list.getChildCount(); x++) {
-            cb = list.getChildAt(x).findViewById(R.id.checkBox);
-            if (enabled[x])
-                cb.setChecked(false);
-        }
     }
 
     protected void editSubpoint(final int position) {
@@ -222,15 +198,13 @@ public class NoteActivity extends AppCompatActivity {
                     modelList.remove(position);
                     modelList.add(position, new Model(edittext.getText().toString(), enabled));
                     adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
-                    boolean[] test = getCheckboxes();
 
                     list.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                     setTextView();
 
-
+                    Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
                     updateData();
-                    clickCheckboxes(test);
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
                 }
@@ -295,7 +269,10 @@ public class NoteActivity extends AppCompatActivity {
 
     protected void updateAdapter(String subpointName) {
         modelList.add(list.getCount(), new Model(subpointName, false));
+
+
         adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+        adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
         updateData();

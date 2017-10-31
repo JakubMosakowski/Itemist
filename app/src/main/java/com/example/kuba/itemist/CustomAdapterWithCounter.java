@@ -47,6 +47,7 @@ public class CustomAdapterWithCounter extends CustomAdapter {
         if (convertView == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
+        }
             TextView name = convertView.findViewById(R.id.textView);
             CheckBox cb = convertView.findViewById(R.id.checkBox);
             cb.setTag(position);
@@ -57,7 +58,7 @@ public class CustomAdapterWithCounter extends CustomAdapter {
                 cb.setChecked(false);
             }
             cb.setOnClickListener(pressed);
-        }
+
 
         return convertView;
 
