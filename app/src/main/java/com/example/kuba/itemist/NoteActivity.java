@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -129,7 +130,7 @@ public class NoteActivity extends AppCompatActivity {
                 modelList.add(new Model(notesArray[i], enabled[i]));
 
             adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
-
+            Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
             list.setAdapter(adapter);
 
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -140,6 +141,7 @@ public class NoteActivity extends AppCompatActivity {
             });
             setTextView();
         } catch (Exception e) {
+            Log.e("Test Nie dziala wyswie",Arrays.toString(e.getStackTrace()));
         }
     }
 

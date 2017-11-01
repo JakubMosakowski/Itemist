@@ -119,8 +119,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
     protected void updateDataDelete(int position) {
         String noteName = adapter.getItem(position);
-        DataHandler data = new DataHandler(noteName, context);
-        subpoints = data.getArrayWithSubpoints();
+        DataHandler data = new DataHandler(noteName,context);
         data.deleteNote(noteName);
     }
 
