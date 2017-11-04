@@ -52,7 +52,7 @@ public class NoteActivity extends AppCompatActivity {
         context = getApplicationContext();
         list = (ListView) findViewById(R.id.listView);
         //TODO REMOVE BELOW
-        textView.setLongClickable(true);
+       /* textView.setLongClickable(true);
         textView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -62,7 +62,7 @@ public class NoteActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
         //TODO REMOVE ABOVE
         try {
             setToolbar();
@@ -79,9 +79,8 @@ public class NoteActivity extends AppCompatActivity {
             super.onSaveInstanceState(outState);
             CheckBox cb;
             boolean[] enabled = new boolean[adapter.getCount()];
-            for (int x = 0; x < list.getChildCount(); x++) {
-                cb = list.getChildAt(x).findViewById(R.id.checkBox);
-                if (cb.isChecked()) {
+            for (int x = 0; x < modelList.size(); x++) {
+                if (modelList.get(x).getEnabled()) {
                     enabled[x] = true;
                 }
             }
