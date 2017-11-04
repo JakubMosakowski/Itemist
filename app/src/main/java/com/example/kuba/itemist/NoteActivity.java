@@ -11,23 +11,27 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.example.kuba.itemist.R.id.listView;
+
 public class NoteActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Intent intent;
     private Context context;
-    private ListView list;
+    private DynamicListView  list;
     private ArrayList<Model> modelList;
     private static final String KEY = "KEY";
     private CustomAdapterWithCounter adapter;
@@ -50,7 +54,7 @@ public class NoteActivity extends AppCompatActivity {
         imgButton = (ImageButton) findViewById(R.id.plus_button);
         v = getWindow().getDecorView();
         context = getApplicationContext();
-        list = (ListView) findViewById(R.id.listView);
+        list = (DynamicListView ) findViewById(listView);
         //TODO REMOVE BELOW
        /* textView.setLongClickable(true);
         textView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -140,16 +144,59 @@ public class NoteActivity extends AppCompatActivity {
             for (int i = 0; i < howManyModels; i++)
                 modelList.add(new Model(notesArray[i], enabled[i]));
 
-            adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
-            Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
-            list.setAdapter(adapter);
+            adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView){
 
+                @Override
+                public long getItemId(int position) {
+                    try {
+                        return modelList.get(position).hashCode();
+                    } catch (IndexOutOfBoundsException e) {
+                        return -1;
+                    }
+                }
+
+                @Override
+                public View getView(final int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+                    //this is klugy for the example, you can call startMoveById from any code.
+
+                    view.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            list.startMoveById(getItemId(position));
+                            //Toast.makeText(NoteActivity.this, "LongClick", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                    });
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Toast.makeText(NoteActivity.this, "ShortClick", Toast.LENGTH_SHORT).show();
+                            dialogDeleteEdit(position);
+                        }
+                    });
+                    return view;
+                }
+
+                @Override
+                public boolean hasStableIds() {
+                    return true;
+                }
+            };
+            list.setHoverOperation(new HoverOperationAllSwap(modelList));
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     dialogDeleteEdit(position);
                 }
             });
+
+            Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
+            list.setAdapter(adapter);
+            list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+
+
             setTextView();
         } catch (Exception e) {
             Log.e("Test Nie dziala wyswie",Arrays.toString(e.getStackTrace()));
