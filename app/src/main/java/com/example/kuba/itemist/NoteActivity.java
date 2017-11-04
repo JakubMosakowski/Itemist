@@ -51,7 +51,19 @@ public class NoteActivity extends AppCompatActivity {
         v = getWindow().getDecorView();
         context = getApplicationContext();
         list = (ListView) findViewById(R.id.listView);
-
+        //TODO REMOVE BELOW
+        textView.setLongClickable(true);
+        textView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                for (int i=0;i<20;i++){
+                    updateAdapter("FakeSub"+i);
+                    setTextView();
+                }
+                return false;
+            }
+        });
+        //TODO REMOVE ABOVE
         try {
             setToolbar();
         } catch (Exception e) {

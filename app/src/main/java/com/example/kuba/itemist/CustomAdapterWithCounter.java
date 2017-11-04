@@ -28,7 +28,13 @@ public class CustomAdapterWithCounter extends CustomAdapter {
     private View.OnClickListener pressed = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Model model;
             selected[(Integer) v.getTag()] = ((CheckBox) v).isChecked();
+            model=getItem((Integer)v.getTag());
+            if(model.getEnabled()){
+                model.setEnabled(false);
+            }else
+                model.setEnabled(true);
             String firstNum, secondNum, wholeText;
             secondNum = String.valueOf(modelArray.size());
             int howManyChecked = 0;
@@ -54,10 +60,11 @@ public class CustomAdapterWithCounter extends CustomAdapter {
             name.setText(model.getName());
             if (model.getEnabled() == true) {
                 cb.setChecked(true);
+
             } else {
                 cb.setChecked(false);
             }
-            cb.setOnClickListener(pressed);
+           cb.setOnClickListener(pressed);
 
 
         return convertView;
