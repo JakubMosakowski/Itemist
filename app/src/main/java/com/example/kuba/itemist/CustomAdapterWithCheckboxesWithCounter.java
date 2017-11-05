@@ -10,20 +10,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import static android.R.attr.data;
-import static android.support.v4.widget.ExploreByTouchHelper.INVALID_ID;
-
 /**
  * Created by Kuba on 22.10.2017.
  */
 
-public class CustomAdapterWithCounter extends CustomAdapter {
+public class CustomAdapterWithCheckboxesWithCounter extends CustomAdapterWithCheckboxes {
 
     private boolean[] selected;
     private TextView textView;
     private ArrayList<Model> models;
 
-    public CustomAdapterWithCounter(ArrayList<Model> data, Context context, TextView v) {
+    public CustomAdapterWithCheckboxesWithCounter(ArrayList<Model> data, Context context, TextView v) {
         super(data, context);
         textView = v;
         models=data;

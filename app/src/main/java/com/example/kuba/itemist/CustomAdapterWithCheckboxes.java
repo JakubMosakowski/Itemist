@@ -15,13 +15,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends ArrayAdapter<Model> {
+public class CustomAdapterWithCheckboxes extends ArrayAdapter<Model> {
 
     public ArrayList<Model> modelArray;
     Context context;
 
 
-    public CustomAdapter(ArrayList<Model> data, Context context) {
+    public CustomAdapterWithCheckboxes(ArrayList<Model> data, Context context) {
         super(context, R.layout.row_for_subpoints, data);
         this.modelArray = data;
         this.context = context;

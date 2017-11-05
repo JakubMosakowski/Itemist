@@ -17,7 +17,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,9 +33,10 @@ public class NoteActivity extends AppCompatActivity {
     private DynamicListView  list;
     private ArrayList<Model> modelList;
     private static final String KEY = "KEY";
-    private CustomAdapterWithCounter adapter;
+    private CustomAdapterWithCheckboxesWithCounter adapter;
     private View v;
-    private ImageButton imgButton;
+    private ImageButton addButton;
+
     private TextView textView;
     private ConstraintLayout cLayout;
 
@@ -51,7 +51,8 @@ public class NoteActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.counter_textView);
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
-        imgButton = (ImageButton) findViewById(R.id.plus_button);
+        addButton = (ImageButton) findViewById(R.id.plus_button);
+
         v = getWindow().getDecorView();
         context = getApplicationContext();
         list = (DynamicListView ) findViewById(listView);
@@ -92,7 +93,11 @@ public class NoteActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
     }
-
+    @Override
+    public void onPause(){
+        super.onPause();
+        updateData();
+    }
     public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,14 +106,13 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-        imgButton.setVisibility(View.VISIBLE);
-        imgButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setVisibility(View.VISIBLE);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addSubpoint();
             }
         });
-
 
     }
 
@@ -144,7 +148,7 @@ public class NoteActivity extends AppCompatActivity {
             for (int i = 0; i < howManyModels; i++)
                 modelList.add(new Model(notesArray[i], enabled[i]));
 
-            adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView){
+            adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView){
 
                 @Override
                 public long getItemId(int position) {
@@ -158,16 +162,21 @@ public class NoteActivity extends AppCompatActivity {
                 @Override
                 public View getView(final int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
-                    //this is klugy for the example, you can call startMoveById from any code.
 
                     view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
                             list.startMoveById(getItemId(position));
-                            //Toast.makeText(NoteActivity.this, "LongClick", Toast.LENGTH_SHORT).show();
+                            String[]array=new String[modelList.size()];
+                            for(int i=0;i<modelList.size();i++){
+                                array[i]=modelList.get(i).getName();
+                            }
+                            //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
+
                             return true;
                         }
                     });
+
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -184,12 +193,7 @@ public class NoteActivity extends AppCompatActivity {
                 }
             };
             list.setHoverOperation(new HoverOperationAllSwap(modelList));
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    dialogDeleteEdit(position);
-                }
-            });
+
 
             Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
             list.setAdapter(adapter);
@@ -221,7 +225,8 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 modelList.remove(position);
-                adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+               // adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
+                adapter.notifyDataSetChanged();
                 list.setAdapter(adapter);
 
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
@@ -257,10 +262,10 @@ public class NoteActivity extends AppCompatActivity {
                     boolean enabled = adapter.getItem(position).getEnabled();
                     modelList.remove(position);
                     modelList.add(position, new Model(edittext.getText().toString(), enabled));
-                    adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
-
-                    list.setAdapter(adapter);
+                    //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
                     adapter.notifyDataSetChanged();
+                    list.setAdapter(adapter);
+
                     setTextView();
 
                     Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
@@ -331,7 +336,8 @@ public class NoteActivity extends AppCompatActivity {
         modelList.add(list.getCount(), new Model(subpointName, false));
 
 
-        adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+        //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
+
         adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
