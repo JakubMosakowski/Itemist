@@ -8,41 +8,55 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import static android.R.attr.data;
+import static android.R.transition.move;
 
 public class ChooseNoteActivity extends AppCompatActivity {
-    private ArrayAdapter<String> adapter;
+    private CustomAdapterWithButton adapter;
+    ArrayList<String> notes;
     private Context context;
-    private ListView list;
+    private DynamicListView list;
     private Toolbar toolbar;
     private View v;
+
     private ImageButton imgButton;
     private String[] subpoints;
+
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_note);
-        imgButton = (ImageButton) findViewById(R.id.plus_button);
+
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        list = (ListView) findViewById(R.id.listView);
+        list = (DynamicListView) findViewById(R.id.listView);
+
         v = findViewById(R.id.activity_choose_note);
         setToolbar();
         try {
             enterNotesToListView();
         } catch (Exception e) {
-
+            Log.e("Test enterNotesWywala",Arrays.toString(e.getStackTrace()));
         }
 
 
@@ -51,7 +65,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
     public void enterNotesToListView() {
         DataHandler data = new DataHandler(context);
 
-        ArrayList<String> notes = new ArrayList<String>();
+        notes = new ArrayList<String>();
         String[] notesArray = data.getArrayWithNotes();
         int count = notesArray.length;
 
@@ -65,24 +79,65 @@ public class ChooseNoteActivity extends AppCompatActivity {
     }
 
     public void setAdapter(ArrayList<String> notes) {
-        adapter = new ArrayAdapter<String>(this, R.layout.row_for_notes_names, notes);
+        adapter = new CustomAdapterWithButton( notes,this) {
 
-        list = (ListView) findViewById(R.id.listView);
-        list.setAdapter(adapter);
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                dialogDeleteEdit(position);
+            public long getItemId(int position) {
+                try {
+                    return adapter.getItem(position).hashCode();
+                } catch (IndexOutOfBoundsException e) {
+                    return -1;
+                }
+            }
+
+            @Override
+            public View getView(final int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                    ImageButton imgButton=view.findViewById(R.id.edit_btn);
+                imgButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialogDeleteEdit(position);
+                    }
+                });
+                view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        list.startMoveById(getItemId(position));
+
+                        return true;
+                    }
+                });
+
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        goToNote(position);
+
+                    }
+                });
+                return view;
+            }
+
+            @Override
+            public boolean hasStableIds() {
                 return true;
             }
+        };
 
-        });
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //Toast.makeText(ChooseNoteActivity.this, "ShortItemClick", Toast.LENGTH_SHORT).show();
                 goToNote(position);
+                //list.startMoveById(i);
             }
-        });
+        });*/
+        list.setHoverOperation(new HoverOperationAllSwap(notes));
+        //Log.e("Sprawdz co z file", Arrays.toString(data.getArrayWithSubpoints()));
+        list.setAdapter(adapter);
+        list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
     }
 
     public void setToolbar() {
@@ -96,7 +151,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
     public void goToNote(int position) {
         Intent intent = new Intent(ChooseNoteActivity.this, NoteActivity.class);
-        intent.putExtra("location", adapter.getItem(position));
+        intent.putExtra("location", adapter.getItem(position).toString());
         ChooseNoteActivity.this.startActivity(intent);
     }
 
@@ -119,8 +174,24 @@ public class ChooseNoteActivity extends AppCompatActivity {
 
     protected void updateDataDelete(int position) {
         String noteName = adapter.getItem(position);
-        DataHandler data = new DataHandler(noteName,context);
+        DataHandler data = new DataHandler(noteName, context);
+        subpoints=data.getArrayWithSubpoints();
         data.deleteNote(noteName);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        updateData();
+    }
+
+    protected void updateData() {
+        String[] array = new String[adapter.getCount()];
+        for (int i = 0; i < adapter.getCount(); i++)
+            array[i] = adapter.getItem(i);
+        DataHandler data = new DataHandler(context);
+
+        data.replaceFileWithNotes(array);
     }
 
     protected void updateDataEdit(int position) {
@@ -129,7 +200,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
         int len = adapter.getCount();
 
         String[] notes = new String[len];
-        data.setStringWithSubpointsArray(subpoints);
+       data.setStringWithSubpointsArray(subpoints);
         data.replaceFileWithSubpoints(subpoints);
         for (int i = 0; i < len; i++)
             notes[i] = adapter.getItem(i);
@@ -157,6 +228,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 if (!edittext.getText().toString().isEmpty() && sameNameNoteExists == false) {
                     updateDataDelete(position);
                     adapter.remove(adapter.getItem(position));
+
                     adapter.insert(edittext.getText().toString(), position);
                     updateDataEdit(position);
                     list.setAdapter(adapter);
@@ -194,5 +266,6 @@ public class ChooseNoteActivity extends AppCompatActivity {
             }
         });
         builder.show();
+
     }
 }

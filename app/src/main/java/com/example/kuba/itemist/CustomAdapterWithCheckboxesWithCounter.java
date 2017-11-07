@@ -14,14 +14,16 @@ import java.util.ArrayList;
  * Created by Kuba on 22.10.2017.
  */
 
-public class CustomAdapterWithCounter extends CustomAdapter {
+public class CustomAdapterWithCheckboxesWithCounter extends CustomAdapterWithCheckboxes {
 
     private boolean[] selected;
     private TextView textView;
+    private ArrayList<Model> models;
 
-    public CustomAdapterWithCounter(ArrayList<Model> data, Context context, TextView v) {
+    public CustomAdapterWithCheckboxesWithCounter(ArrayList<Model> data, Context context, TextView v) {
         super(data, context);
         textView = v;
+        models=data;
         selected = new boolean[data.size()];
     }
 
@@ -69,5 +71,12 @@ public class CustomAdapterWithCounter extends CustomAdapter {
 
         return convertView;
 
+    }
+
+
+
+    @Override
+    public boolean hasStableIds() {
+        return android.os.Build.VERSION.SDK_INT < 20;
     }
 }

@@ -18,8 +18,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         if (intent.getStringExtra("TAG") != null) {
-            if (intent.getStringExtra("TAG").equals("noteAdded"))
+            if (intent.getStringExtra("TAG").equals("noteAdded")){
                 Toast.makeText(getApplicationContext(), R.string.note_added, Toast.LENGTH_SHORT).show();
+                intent.removeExtra("TAG");
+            }
         }
 
 

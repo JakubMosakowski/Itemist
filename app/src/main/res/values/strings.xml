@@ -32,6 +32,10 @@
     <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 50 podpunktów!</string>
     <string name="there_is_note_with_that_name">Już masz notatkę z taką nazwą!</string>
     <string name="add_subpoint">Dodaj podpunkt:</string>
+    <string name="plus">plus</string>
+    <string name="arrangement_updated">Ustawienie zaktualizowane</string>
+    <string name="refresh_button">Refresh button</string>
+    <string name="change_button">Change button</string>
 
 
 </resources>

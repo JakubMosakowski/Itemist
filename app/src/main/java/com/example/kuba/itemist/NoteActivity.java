@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -22,17 +23,20 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static com.example.kuba.itemist.R.id.listView;
+
 public class NoteActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Intent intent;
     private Context context;
-    private ListView list;
+    private DynamicListView  list;
     private ArrayList<Model> modelList;
     private static final String KEY = "KEY";
-    private CustomAdapterWithCounter adapter;
+    private CustomAdapterWithCheckboxesWithCounter adapter;
     private View v;
-    private ImageButton imgButton;
+    private ImageButton addButton;
+
     private TextView textView;
     private ConstraintLayout cLayout;
 
@@ -47,10 +51,11 @@ public class NoteActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.counter_textView);
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
-        imgButton = (ImageButton) findViewById(R.id.plus_button);
+        addButton = (ImageButton) findViewById(R.id.plus_button);
+
         v = getWindow().getDecorView();
         context = getApplicationContext();
-        list = (ListView) findViewById(R.id.listView);
+        list = (DynamicListView ) findViewById(listView);
         //TODO REMOVE BELOW
        /* textView.setLongClickable(true);
         textView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -88,7 +93,11 @@ public class NoteActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
     }
-
+    @Override
+    public void onPause(){
+        super.onPause();
+        updateData();
+    }
     public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,14 +106,13 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-        imgButton.setVisibility(View.VISIBLE);
-        imgButton.setOnClickListener(new View.OnClickListener() {
+        addButton.setVisibility(View.VISIBLE);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addSubpoint();
             }
         });
-
 
     }
 
@@ -140,16 +148,56 @@ public class NoteActivity extends AppCompatActivity {
             for (int i = 0; i < howManyModels; i++)
                 modelList.add(new Model(notesArray[i], enabled[i]));
 
-            adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+            adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView){
+
+                @Override
+                public long getItemId(int position) {
+                    try {
+                        return modelList.get(position).hashCode();
+                    } catch (IndexOutOfBoundsException e) {
+                        return -1;
+                    }
+                }
+
+                @Override
+                public View getView(final int position, View convertView, ViewGroup parent) {
+                    View view = super.getView(position, convertView, parent);
+
+                    view.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            list.startMoveById(getItemId(position));
+
+                            //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
+
+                            return true;
+                        }
+                    });
+
+                    view.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //Toast.makeText(NoteActivity.this, "ShortClick", Toast.LENGTH_SHORT).show();
+                            dialogDeleteEdit(position);
+                        }
+                    });
+                    return view;
+                }
+
+                @Override
+                public boolean hasStableIds() {
+                    return true;
+                }
+            };
+            list.setHoverOperation(new HoverOperationAllSwap(modelList));
+
+
             Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
             list.setAdapter(adapter);
+            list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    dialogDeleteEdit(position);
-                }
-            });
+
+
             setTextView();
         } catch (Exception e) {
             Log.e("Test Nie dziala wyswie",Arrays.toString(e.getStackTrace()));
@@ -174,7 +222,8 @@ public class NoteActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 modelList.remove(position);
-                adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+               // adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
+                adapter.notifyDataSetChanged();
                 list.setAdapter(adapter);
 
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
@@ -210,10 +259,10 @@ public class NoteActivity extends AppCompatActivity {
                     boolean enabled = adapter.getItem(position).getEnabled();
                     modelList.remove(position);
                     modelList.add(position, new Model(edittext.getText().toString(), enabled));
-                    adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
-
-                    list.setAdapter(adapter);
+                    //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
                     adapter.notifyDataSetChanged();
+                    list.setAdapter(adapter);
+
                     setTextView();
 
                     Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
@@ -284,7 +333,8 @@ public class NoteActivity extends AppCompatActivity {
         modelList.add(list.getCount(), new Model(subpointName, false));
 
 
-        adapter = new CustomAdapterWithCounter(modelList, NoteActivity.this, textView);
+        //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
+
         adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();

@@ -6,8 +6,9 @@
     android:id="@+id/activity_note"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.kuba.itemist.ChooseNoteActivity"
+    tools:context="com.example.kuba.itemist.NoteActivity"
     android:orientation="vertical"
+
     >
 
     <include
@@ -15,7 +16,7 @@
         layout="@layout/toolbar" />
 
 
-    <ListView
+    <com.example.kuba.itemist.DynamicListView
         android:id="@+id/listView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -24,7 +25,6 @@
         android:divider="@color/colorPrimary"
         android:dividerHeight="5dp"
         android:fadeScrollbars="false"
-        android:transcriptMode="alwaysScroll"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
