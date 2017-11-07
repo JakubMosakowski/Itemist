@@ -167,10 +167,7 @@ public class NoteActivity extends AppCompatActivity {
                         @Override
                         public boolean onLongClick(View v) {
                             list.startMoveById(getItemId(position));
-                            String[]array=new String[modelList.size()];
-                            for(int i=0;i<modelList.size();i++){
-                                array[i]=modelList.get(i).getName();
-                            }
+
                             //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
 
                             return true;

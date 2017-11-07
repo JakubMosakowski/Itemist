@@ -12,12 +12,14 @@ import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 
 public class AddNoteActivity extends AppCompatActivity {
 
-    private ListView list;
+    private DynamicListView list;
     private Intent intent;
     private ArrayAdapter<String> adapter;
     private EditText editTextSubpointOfTheList;
@@ -46,7 +48,7 @@ public class AddNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_note);
 
-        list = (ListView) findViewById(R.id.listView);
+        list = (DynamicListView) findViewById(R.id.listView);
         textViewCounter = (TextView) findViewById(R.id.textView_counter);
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
@@ -104,14 +106,50 @@ public class AddNoteActivity extends AppCompatActivity {
             subpointsL = bundle.getStringArrayList(STRING_KEY_RESTORE);
         }
 
-        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL){
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                dialogDeleteEdit(position);
+            public long getItemId(int position) {
+            try {
+                return adapter.getItem(position).hashCode();
+            } catch (IndexOutOfBoundsException e) {
+                return -1;
             }
-        });
+        }
+
+            @Override
+            public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = super.getView(position, convertView, parent);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialogDeleteEdit(position);
+                }
+            });
+                view.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        list.startMoveById(getItemId(position));
+
+                        //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
+
+                        return true;
+                    }
+                });
+            return view;
+        }
+
+            @Override
+            public boolean hasStableIds() {
+            return true;
+        }
+        };
+
+
+        list.setHoverOperation(new HoverOperationAllSwap(subpointsL));
+        list.setAdapter(adapter);
+        list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
