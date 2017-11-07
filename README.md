@@ -1,19 +1,16 @@
 # Itemist
-<<<<<<< HEAD
+
 First bigger java android app. 
 Create note, add subpoints, edit/delete, save data to file, read from file, few other features.
 =======
 ## Description:
 First bigger java, android app. 
 Create notes, add subpoints, edit/delete, save data to file, read from file, few other features.
->>>>>>> b75af37... Update README.md
 
 ### What I would change:
 
 - I would implements more classes, eg. Note class, Subpoint class.
 - I would write code which is easier to test.
-<<<<<<< HEAD
-=======
 
 
 
@@ -41,4 +38,3 @@ Create notes, add subpoints, edit/delete, save data to file, read from file, few
 
 #### Features:
   - Name note, add subpoints, save note. Delete notes, edit content.
->>>>>>> b75af37... Update README.md
