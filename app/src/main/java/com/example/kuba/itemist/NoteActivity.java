@@ -12,7 +12,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -49,8 +48,7 @@ public class NoteActivity extends AppCompatActivity {
         intent = getIntent();
         cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
         textView = (TextView) findViewById(R.id.counter_textView);
-        textView.setVisibility(View.VISIBLE);
-        textView.setText("");
+
         addButton = (ImageButton) findViewById(R.id.plus_button);
 
         v = getWindow().getDecorView();
@@ -113,7 +111,24 @@ public class NoteActivity extends AppCompatActivity {
                 addSubpoint();
             }
         });
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("");
 
+    }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.do_you_want_to_exit)
+                .setCancelable(false)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(NoteActivity.this, ChooseNoteActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(R.string.no, null)
+                .show();
     }
 
     public void setTextView() {
@@ -167,9 +182,7 @@ public class NoteActivity extends AppCompatActivity {
                         @Override
                         public boolean onLongClick(View v) {
                             list.startMoveById(getItemId(position));
-
                             //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
-
                             return true;
                         }
                     });

@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        ItemistKey {
+            keyAlias 'ItemistKey'
+            keyPassword '970523mac'
+            storeFile file('C:/Users/Kuba/Dysk Google/android.jks')
+            storePassword '970523mac'
+        }
+    }
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
-
     defaultConfig {
         applicationId "com.Itemist"
         minSdkVersion 21
@@ -13,17 +20,20 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.ItemistKey
+        }
+        debug {
+            signingConfig signingConfigs.ItemistKey
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     // Unit testing dependencies
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'

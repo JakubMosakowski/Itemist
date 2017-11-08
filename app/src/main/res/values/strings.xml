@@ -7,7 +7,7 @@
     <string name="note_added">Notatka dodana</string>
     <string name="add_name_of_note_button">Nadaj nazwę</string>
     <string name="error_no_name">Podaj nazwę!</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="enter_content_of_subpoint">Podaj podpunkt listy</string>
     <string name="subpoint_added">Podpunkt dodano!</string>
     <string name="you_sure_you_want_to_exit">Na pewno nie chcesz dokończyć notatki?</string>
@@ -32,10 +32,12 @@
     <string name="you_cant_have_more_subpoints">Nie możesz mieć więcej niż 50 podpunktów!</string>
     <string name="there_is_note_with_that_name">Już masz notatkę z taką nazwą!</string>
     <string name="add_subpoint">Dodaj podpunkt:</string>
-    <string name="plus">plus</string>
+    <string name="plus_button">Przycisk dodawania</string>
     <string name="arrangement_updated">Ustawienie zaktualizowane</string>
-    <string name="refresh_button">Refresh button</string>
-    <string name="change_button">Change button</string>
+    <string name="refresh_button">Przycisk odświeżania</string>
+    <string name="change_button">Przycisk zmiany</string>
+    <string name="do_you_want_to_exit">Czy chcesz wyjść?</string>
+    <string name="settings_button">Przycisk opcji</string>
 
 
 </resources>
