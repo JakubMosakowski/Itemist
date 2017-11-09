@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -34,7 +35,7 @@ public class NoteActivity extends AppCompatActivity {
     private static final String KEY = "KEY";
     private CustomAdapterWithCheckboxesWithCounter adapter;
     private View v;
-    private ImageButton addButton;
+    private Button addButton;
 
     private TextView textView;
     private ConstraintLayout cLayout;
@@ -49,8 +50,14 @@ public class NoteActivity extends AppCompatActivity {
         cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
         textView = (TextView) findViewById(R.id.counter_textView);
 
-        addButton = (ImageButton) findViewById(R.id.plus_button);
-
+        addButton = (Button) findViewById(R.id.button_add_subpoint);
+        addButton.setVisibility(View.VISIBLE);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addSubpoint();
+            }
+        });
         v = getWindow().getDecorView();
         context = getApplicationContext();
         list = (DynamicListView ) findViewById(listView);
@@ -104,13 +111,7 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-        addButton.setVisibility(View.VISIBLE);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addSubpoint();
-            }
-        });
+
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
 
