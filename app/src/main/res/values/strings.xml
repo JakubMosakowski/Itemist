@@ -38,6 +38,7 @@
     <string name="change_button">Przycisk zmiany</string>
     <string name="do_you_want_to_exit">Czy chcesz wyjść?</string>
     <string name="settings_button">Przycisk opcji</string>
+    <string name="add_sub_button">Dodaj podpunkt</string>
 
 
 </resources>

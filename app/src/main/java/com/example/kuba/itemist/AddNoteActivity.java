@@ -33,7 +33,6 @@ public class AddNoteActivity extends AppCompatActivity {
     private Intent intent;
     private ArrayAdapter<String> adapter;
     private EditText editTextSubpointOfTheList;
-    private TextView textViewCounter;
     private int howManySubpoints = 0;
     private Context context;
     private Toolbar toolbar;
@@ -41,6 +40,7 @@ public class AddNoteActivity extends AppCompatActivity {
     private String INT_KEY = "int_key";
     private Button buttonFinish;
     private Button buttonSubmit;
+    private final int maxSubpoints=50;
 
 
     @Override
@@ -49,7 +49,6 @@ public class AddNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_note);
 
         list = (DynamicListView) findViewById(R.id.listView);
-        textViewCounter = (TextView) findViewById(R.id.textView_counter);
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,7 +59,6 @@ public class AddNoteActivity extends AppCompatActivity {
 
         setAdapter(savedInstanceState);
         setToolbar();
-        setCounter(savedInstanceState);
 
         editTextSubpointOfTheList.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
@@ -192,17 +190,10 @@ public class AddNoteActivity extends AppCompatActivity {
                 .show();
     }
 
-    public void setCounter(Bundle bundle) {
-        if (bundle != null)
-            howManySubpoints = bundle.getInt(INT_KEY);
-        String container = getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints);
-        textViewCounter.setText(container);
-    }
-
     protected void buttonAcceptOnClick(View v) {
 
         String subpoint = editTextSubpointOfTheList.getText().toString();
-        if (howManySubpoints >= 50)
+        if (howManySubpoints >= maxSubpoints)
             Toast.makeText(getApplicationContext(), R.string.you_cant_have_more_subpoints, Toast.LENGTH_SHORT).show();
         else {
             if (!subpoint.equals("")) {
@@ -223,12 +214,10 @@ public class AddNoteActivity extends AppCompatActivity {
 
     protected void counterUpdatePlus() {
         howManySubpoints++;
-        textViewCounter.setText(getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints));
     }
 
     protected void counterUpdateMinus() {
         howManySubpoints--;
-        textViewCounter.setText(getResources().getString(R.string.counter_value) + String.valueOf(howManySubpoints));
     }
 
     protected void deleteNote(final int position) {
@@ -290,7 +279,6 @@ public class AddNoteActivity extends AppCompatActivity {
                 } else if (which == 1) {
                     editNote(position);
                 }
-
             }
         });
         builder.show();

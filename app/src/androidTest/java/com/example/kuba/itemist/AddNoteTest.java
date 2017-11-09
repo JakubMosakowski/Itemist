@@ -67,28 +67,22 @@ public class AddNoteTest {
         for (int i = 0; i < NUM; i++) {
             appCompatEditText = onView(
                     allOf(withId(R.id.editText_subpoint_of_the_list),
-                            withParent(allOf(withId(R.id.activity_add_note),
-                                    withParent(withId(android.R.id.content)))),
                             isDisplayed()));
             appCompatEditText.perform(click());
             appCompatEditText = onView(
                     allOf(withId(R.id.editText_subpoint_of_the_list),
-                            withParent(allOf(withId(R.id.activity_add_note),
-                                    withParent(withId(android.R.id.content)))),
                             isDisplayed()));
             appCompatEditText.perform(replaceText(String.valueOf(i)), closeSoftKeyboard());
 
             appCompatButton = onView(
-                    allOf(withId(R.id.button_accept_subpoint), withText("Ok"),
-                            withParent(allOf(withId(R.id.activity_add_note),
-                                    withParent(withId(android.R.id.content)))),
+                    allOf(withId(R.id.button_accept_subpoint),
                             isDisplayed()));
             appCompatButton.perform(click());
             notes[i] = String.valueOf(i);
         }
         String[] notes2 = new String[NUM];
 
-        ListView lv = activity.findViewById(R.id.listView);
+        DynamicListView lv = activity.findViewById(R.id.listView);
         for (int i = 0; i < NUM; i++) {
             notes2[i] = lv.getAdapter().getItem(i).toString();
         }
