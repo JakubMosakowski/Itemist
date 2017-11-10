@@ -3,20 +3,25 @@ package com.example.kuba.itemist;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,15 +41,37 @@ public class NoteActivity extends AppCompatActivity {
     private CustomAdapterWithCheckboxesWithCounter adapter;
     private View v;
     private Button addButton;
-
+    private int fontSize;
+    private ImageButton buttonSettings;
     private TextView textView;
     private ConstraintLayout cLayout;
+    private Bundle bundle;
+    private final int defaultFontSize=25;
+
+@Override
+protected  void onResume(){
+    super.onResume();
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    fontSize = prefs.getInt("fontSize",0)+defaultFontSize;
+    if(getIntent().getBooleanArrayExtra(KEY)!=null){
+        boolean[] enabled=getIntent().getBooleanArrayExtra(KEY);
+        bundle=new Bundle();
+        bundle.putBooleanArray(KEY, enabled);
+    }
+
+   mySetAdapter(bundle);
+}
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+        context = getApplicationContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        fontSize = prefs.getInt("fontSize",0)+defaultFontSize;
+
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
         cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
@@ -59,7 +86,7 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         v = getWindow().getDecorView();
-        context = getApplicationContext();
+
         list = (DynamicListView ) findViewById(listView);
         //TODO REMOVE BELOW
        /* textView.setLongClickable(true);
@@ -82,7 +109,18 @@ public class NoteActivity extends AppCompatActivity {
 
 
     }
-
+    private void toSettings(View view) {
+        CheckBox cb;
+        boolean[] enabled = new boolean[adapter.getCount()];
+        for (int x = 0; x < modelList.size(); x++) {
+            if (modelList.get(x).getEnabled()) {
+                enabled[x] = true;
+            }
+        }
+        getIntent().putExtra(KEY, enabled);
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         try {
@@ -101,6 +139,7 @@ public class NoteActivity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
+
         updateData();
     }
     public void setToolbar() {
@@ -111,7 +150,13 @@ public class NoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-
+        buttonSettings=findViewById(R.id.settings_button);
+        buttonSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toSettings(view);
+            }
+        });
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
 
@@ -178,6 +223,9 @@ public class NoteActivity extends AppCompatActivity {
                 @Override
                 public View getView(final int position, View convertView, ViewGroup parent) {
                     View view = super.getView(position, convertView, parent);
+                    TextView textView = (TextView) view.findViewById(R.id.textView);
+                    textView.setTextSize(fontSize);
+
 
                     view.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -202,6 +250,7 @@ public class NoteActivity extends AppCompatActivity {
                 public boolean hasStableIds() {
                     return true;
                 }
+
             };
             list.setHoverOperation(new HoverOperationAllSwap(modelList));
 

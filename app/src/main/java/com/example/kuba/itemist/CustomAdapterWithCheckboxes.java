@@ -6,6 +6,8 @@ package com.example.kuba.itemist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,9 @@ public class CustomAdapterWithCheckboxes extends ArrayAdapter<Model> {
 
     public ArrayList<Model> modelArray;
     Context context;
+    int fTextSize;
+    View v;
+
 
 
     public CustomAdapterWithCheckboxes(ArrayList<Model> data, Context context) {
@@ -36,6 +41,7 @@ public class CustomAdapterWithCheckboxes extends ArrayAdapter<Model> {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
         }
+        v=convertView;
             TextView name = convertView.findViewById(R.id.textView);
             CheckBox cb = convertView.findViewById(R.id.checkBox);
 

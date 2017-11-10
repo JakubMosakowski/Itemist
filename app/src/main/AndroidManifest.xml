@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher5"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.kuba.itemist.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,30 +19,33 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.kuba.itemist.NameNoteActivity"
+            android:name=".NameNoteActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.example.kuba.itemist.MainActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.kuba.itemist.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.kuba.itemist.AddNoteActivity"
-            android:parentActivityName="com.example.kuba.itemist.NameNoteActivity"
+            android:name=".AddNoteActivity"
+            android:parentActivityName=".NameNoteActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.kuba.itemist.MainActivity" />
         </activity>
         <activity
-            android:name="com.example.kuba.itemist.ChooseNoteActivity"
+            android:name=".ChooseNoteActivity"
             android:label="@string/app_name"
-            android:parentActivityName="com.example.kuba.itemist.MainActivity">
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.kuba.itemist.MainActivity" />
         </activity>
-        <activity android:name="com.example.kuba.itemist.NoteActivity"></activity>
+        <activity android:name=".NoteActivity" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>
