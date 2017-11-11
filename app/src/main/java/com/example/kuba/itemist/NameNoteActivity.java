@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +23,14 @@ public class NameNoteActivity extends AppCompatActivity {
     Button buttonNameOfNote;
     Toolbar toolbar;
     Context context;
-
+    private static final String KEY = "KEY";
+    @Override
+    protected void onResume(){
+        super.onResume();
+        /*if(getIntent().getStringExtra(KEY)!=null){
+           editTextNameOfNote.setText(getIntent().getStringExtra(KEY));
+        }*/
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +56,47 @@ public class NameNoteActivity extends AppCompatActivity {
             }
 
         });
+        setToolbar();
+    }
+
+    public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        final ImageButton imgBtn=findViewById(R.id.overflow_icon);
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(NameNoteActivity.this, imgBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
+                            ;
+                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
+                            toAbout();
+
+                        return true;
+                    }
+                });
+                popup.show(); //showing popup menu
+            }
+        });
+    }
+
+    private void toAbout() {
+        /*String text=editTextNameOfNote.getText().toString();
+        getIntent().putExtra(KEY, text);*/
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     protected void enterNote(View v) {

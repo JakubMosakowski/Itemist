@@ -41,6 +41,12 @@
     <string name="add_sub_button">Dodaj podpunkt</string>
     <string name="title_activity_settings">Settings</string>
     <string name="font_size">Wielkość czcionki</string>
+    <string name="overflow_icon">Przyciski wiecej</string>
+    <string name="about_app">O aplikacji</string>
+    <string name="settings">Opcje</string>
+    <string name="current_version">Obecna wersja:</string>
+    <string name="in_case_of_error_send_mail">W razie problemów proszę o email:</string>
+    <string name="author">Autor: Jakub Mosakowski</string>
 
 
 </resources>

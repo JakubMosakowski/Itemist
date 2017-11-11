@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -147,6 +149,35 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 finish();
             }
         });
+        final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(ChooseNoteActivity.this, imgBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
+                            ;
+                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
+                            toAbout();
+
+                        return true;
+                    }
+                });
+                popup.show(); //showing popup menu
+            }
+        });
+    }
+
+    private void toAbout() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     public void goToNote(int position) {

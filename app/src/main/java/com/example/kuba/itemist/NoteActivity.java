@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -21,9 +22,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,11 +45,10 @@ public class NoteActivity extends AppCompatActivity {
     private View v;
     private Button addButton;
     private int fontSize;
-    private ImageButton buttonSettings;
     private TextView textView;
     private ConstraintLayout cLayout;
     private Bundle bundle;
-    private final int defaultFontSize=25;
+    private final int defaultFontSize=10;
 
 @Override
 protected  void onResume(){
@@ -109,7 +111,7 @@ protected  void onResume(){
 
 
     }
-    private void toSettings(View view) {
+    private void toSettings() {
         CheckBox cb;
         boolean[] enabled = new boolean[adapter.getCount()];
         for (int x = 0; x < modelList.size(); x++) {
@@ -139,7 +141,6 @@ protected  void onResume(){
     @Override
     public void onPause(){
         super.onPause();
-
         updateData();
     }
     public void setToolbar() {
@@ -150,17 +151,48 @@ protected  void onResume(){
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-        buttonSettings=findViewById(R.id.settings_button);
-        buttonSettings.setOnClickListener(new View.OnClickListener() {
+        final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
+        imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                toSettings(view);
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(NoteActivity.this, imgBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.toolbar_menu_settings, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
+                            toSettings();
+                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
+                            toAbout();
+
+                        return true;
+                    }
+                });
+                popup.show(); //showing popup menu
             }
         });
         textView.setVisibility(View.VISIBLE);
         textView.setText("");
 
     }
+
+    private void toAbout() {
+        CheckBox cb;
+        boolean[] enabled = new boolean[adapter.getCount()];
+        for (int x = 0; x < modelList.size(); x++) {
+            if (modelList.get(x).getEnabled()) {
+                enabled[x] = true;
+            }
+        }
+        getIntent().putExtra(KEY, enabled);
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this)

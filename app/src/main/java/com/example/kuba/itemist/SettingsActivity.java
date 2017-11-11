@@ -34,8 +34,8 @@ public class SettingsActivity extends PreferenceActivity
                     finish();
                 }
             });
-            ImageButton settingsButton=(ImageButton)findViewById(R.id.settings_button);
-            settingsButton.setVisibility(View.INVISIBLE);
+            ImageButton imgBtn=findViewById(R.id.overflow_icon);
+            imgBtn.setVisibility(View.INVISIBLE);
             getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
         }
 
@@ -46,6 +46,7 @@ public class SettingsActivity extends PreferenceActivity
             {
                 super.onCreate(savedInstanceState);
                 addPreferencesFromResource(R.xml.app_preferences);
+
 
             }
         }

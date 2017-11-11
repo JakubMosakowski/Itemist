@@ -7,20 +7,20 @@
     android:background="?attr/colorPrimary"
     app:navigationIcon="?attr/homeAsUpIndicator"
     app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:showAsAction="never"
     app:title="@string/app_name">
 
-
     <ImageButton
-        android:id="@+id/settings_button"
+        android:id="@+id/overflow_icon"
         style="@style/Widget.AppCompat.ImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/settings_button"
+        android:contentDescription="@string/overflow_icon"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
-        android:src="@drawable/ic_action_settings"
+        android:src="@drawable/ic_action_name"
         android:visibility="visible" />
 
 

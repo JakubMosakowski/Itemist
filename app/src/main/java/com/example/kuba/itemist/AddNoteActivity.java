@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +44,7 @@ public class AddNoteActivity extends AppCompatActivity {
     private Button buttonFinish;
     private Button buttonSubmit;
     private final int maxSubpoints=50;
+    private static final String KEY = "KEY";
 
 
     @Override
@@ -172,6 +176,35 @@ public class AddNoteActivity extends AppCompatActivity {
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
+        final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
+        imgBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creating the instance of PopupMenu
+                PopupMenu popup = new PopupMenu(AddNoteActivity.this, imgBtn);
+                //Inflating the Popup using xml file
+                popup.getMenuInflater()
+                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
+                            ;
+                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
+                            toAbout();
+
+                        return true;
+                    }
+                });
+                popup.show(); //showing popup menu
+            }
+        });
+    }
+
+    private void toAbout() {
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivity(intent);
     }
 
     @Override
