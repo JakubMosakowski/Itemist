@@ -56,12 +56,13 @@ protected  void onResume(){
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     fontSize = prefs.getInt("fontSize",0)+defaultFontSize;
     if(getIntent().getBooleanArrayExtra(KEY)!=null){
+       // Toast.makeText(context, "DZIAA", Toast.LENGTH_SHORT).show();
         boolean[] enabled=getIntent().getBooleanArrayExtra(KEY);
         bundle=new Bundle();
         bundle.putBooleanArray(KEY, enabled);
+        onDestroy();
+        onCreate(bundle);
     }
-
-   mySetAdapter(bundle);
 }
 
 
@@ -434,5 +435,15 @@ protected  void onResume(){
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
         updateData();
+        boolean[] enabled = new boolean[adapter.getCount()];
+        for (int x = 0; x < modelList.size(); x++) {
+            if (modelList.get(x).getEnabled()) {
+                enabled[x] = true;
+            }
+        }
+        bundle=new Bundle();
+        bundle.putBooleanArray(KEY, enabled);
+        onDestroy();
+        onCreate(bundle);
     }
 }
