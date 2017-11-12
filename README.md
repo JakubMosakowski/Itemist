@@ -10,6 +10,12 @@ Create notes, add subpoints, edit/delete, save data to file, read from file, few
 
 ## Changelog 
 
+### v.1.2.1
+
+#### Bug Fixes:
+  - Checkboxes are not turning off on screen rotation.
+  - When you had added new subpoint and tried to edit it instantly app was crashing. Now fixed.
+
 ### v.1.2.0
 
 #### Features:
