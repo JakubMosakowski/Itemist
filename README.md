@@ -10,6 +10,23 @@ Create notes, add subpoints, edit/delete, save data to file, read from file, few
 
 ## Changelog 
 
+### v.1.2.1
+
+#### Bug Fixes:
+  - Checkboxes are not turning off on screen rotation.
+  - When you had added new subpoint and tried to edit it instantly app was crashing. Now fixed.
+
+### v.1.2.0
+
+#### Features:
+ - Moved AddSubpointButton  to the left corner of the activity.
+ - In place of AddSubpointButton, now there is MoreButton (three pink dots align vertically). Depends on which activity you are, the button shows different items in dropList.  For every activity there is AboutItem. If you click on it, it moves you to AboutActivity. For NoteActivity, MoreButton shows another item - SettingsItem. On click moves you to SettingsActivity.
+ - Added about activity. There is info about current version and email to me if you need help using the app or you have found an error. Clicking on the email is opening an email app. 
+ - Added SettingsActivity. You can change the size of subpoints with slider.
+ 
+#### Community proposal: 
+ - Deleted counter from AddNoteActivity. There is no point of showing number of subpoints. It just spoils the look of activity.
+
 ### v.1.1.0
 
 #### Features:
