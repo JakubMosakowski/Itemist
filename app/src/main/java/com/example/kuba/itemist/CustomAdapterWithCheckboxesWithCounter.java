@@ -27,16 +27,14 @@ public class CustomAdapterWithCheckboxesWithCounter extends CustomAdapterWithChe
         selected = new boolean[data.size()];
     }
 
-    private View.OnClickListener pressed = new View.OnClickListener() {
+    protected View.OnClickListener pressed = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Model model;
+            CustomAdapterWithCheckboxesWithCounter.super.pressed.onClick(v);
+            //TODO test if this super working
+
             selected[(Integer) v.getTag()] = ((CheckBox) v).isChecked();
-            model=getItem((Integer)v.getTag());
-            if(model.getEnabled()){
-                model.setEnabled(false);
-            }else
-                model.setEnabled(true);
+
             String firstNum, secondNum, wholeText;
             secondNum = String.valueOf(modelArray.size());
             int howManyChecked = 0;

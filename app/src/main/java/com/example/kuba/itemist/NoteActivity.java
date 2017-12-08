@@ -12,7 +12,6 @@ import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,32 +34,31 @@ public class NoteActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Intent intent;
     private Context context;
-    private DynamicListView  list;
+    private DynamicListView list;
     private ArrayList<Model> modelList;
     private static final String KEY = "KEY";
-    private CustomAdapterWithCheckboxesWithCounter adapter;
+    private CustomAdapterWithCheckboxes adapter;
     private View v;
     private Button addButton;
     private int fontSize;
-    private TextView textView;
     private ConstraintLayout cLayout;
     private Bundle bundle;
-    private final int defaultFontSize=10;
+    private final int defaultFontSize = 10;
 
-@Override
-protected  void onResume(){
-    super.onResume();
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    fontSize = prefs.getInt("fontSize",0)+defaultFontSize;
-    if(getIntent().getBooleanArrayExtra(KEY)!=null){
-       // Toast.makeText(context, "DZIAA", Toast.LENGTH_SHORT).show();
-        boolean[] enabled=getIntent().getBooleanArrayExtra(KEY);
-        bundle=new Bundle();
-        bundle.putBooleanArray(KEY, enabled);
-        onDestroy();
-        onCreate(bundle);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        fontSize = prefs.getInt("fontSize", 0) + defaultFontSize;
+        if (getIntent().getBooleanArrayExtra(KEY) != null) {
+            Log.e("Test booleanOnResume",Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
+            boolean[] enabled = getIntent().getBooleanArrayExtra(KEY);
+            bundle = new Bundle();
+            bundle.putBooleanArray(KEY, enabled);
+            onDestroy();
+            onCreate(bundle);
+        }
     }
-}
 
 
     @Override
@@ -72,13 +67,11 @@ protected  void onResume(){
         setContentView(R.layout.activity_note);
         context = getApplicationContext();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        fontSize = prefs.getInt("fontSize",0)+defaultFontSize;
-
+        fontSize = prefs.getInt("fontSize", 0) + defaultFontSize;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         intent = getIntent();
         cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
-        textView = (TextView) findViewById(R.id.counter_textView);
 
         addButton = (Button) findViewById(R.id.button_add_subpoint);
         addButton.setVisibility(View.VISIBLE);
@@ -90,20 +83,7 @@ protected  void onResume(){
         });
         v = getWindow().getDecorView();
 
-        list = (DynamicListView ) findViewById(listView);
-        //TODO REMOVE BELOW
-       /* textView.setLongClickable(true);
-        textView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                for (int i=0;i<20;i++){
-                    updateAdapter("FakeSub"+i);
-                    setTextView();
-                }
-                return false;
-            }
-        });*/
-        //TODO REMOVE ABOVE
+        list = (DynamicListView) findViewById(listView);
         try {
             setToolbar();
         } catch (Exception e) {
@@ -112,18 +92,22 @@ protected  void onResume(){
 
 
     }
+
     private void toSettings() {
         CheckBox cb;
         boolean[] enabled = new boolean[adapter.getCount()];
         for (int x = 0; x < modelList.size(); x++) {
             if (modelList.get(x).getEnabled()) {
+                Log.e("Test modelOnSettings",String.valueOf(modelList.get(x).getEnabled()));
                 enabled[x] = true;
             }
         }
         getIntent().putExtra(KEY, enabled);
+        Log.e("Test booleanOnSettings",Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         try {
@@ -139,11 +123,13 @@ protected  void onResume(){
         } catch (Exception e) {
         }
     }
+
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         updateData();
     }
+
     public void setToolbar() {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +138,7 @@ protected  void onResume(){
             }
         });
         toolbar.setTitle(intent.getStringExtra("location"));
-        final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
+        final ImageButton imgBtn = findViewById(R.id.overflow_icon);
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,9 +151,9 @@ protected  void onResume(){
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
+                        if (item.getTitle().toString().equals(getResources().getString(R.string.settings)))
                             toSettings();
-                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
+                        else if (item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
                             toAbout();
 
                         return true;
@@ -176,8 +162,6 @@ protected  void onResume(){
                 popup.show(); //showing popup menu
             }
         });
-        textView.setVisibility(View.VISIBLE);
-        textView.setText("");
 
     }
 
@@ -210,19 +194,6 @@ protected  void onResume(){
                 .show();
     }
 
-    public void setTextView() {
-
-        int howManyChecked = 0;
-        String firstNum, secondNum, wholeText;
-        int len = adapter.getCount();
-        for (int i = 0; i < len; i++)
-            if (adapter.getItem(i).getEnabled())
-                howManyChecked++;
-        firstNum = String.valueOf(howManyChecked);
-        secondNum = String.valueOf(len);
-        wholeText = firstNum + "/" + secondNum;
-        textView.setText(wholeText);
-    }
 
 
     public void mySetAdapter(Bundle bundle) {
@@ -242,7 +213,7 @@ protected  void onResume(){
             for (int i = 0; i < howManyModels; i++)
                 modelList.add(new Model(notesArray[i], enabled[i]));
 
-            adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView){
+            adapter = new CustomAdapterWithCheckboxes(modelList, NoteActivity.this) {
 
                 @Override
                 public long getItemId(int position) {
@@ -264,7 +235,6 @@ protected  void onResume(){
                         @Override
                         public boolean onLongClick(View v) {
                             list.startMoveById(getItemId(position));
-                            //Toast.makeText(NoteActivity.this, Arrays.toString(array), Toast.LENGTH_SHORT).show();
                             return true;
                         }
                     });
@@ -272,7 +242,6 @@ protected  void onResume(){
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            //Toast.makeText(NoteActivity.this, "ShortClick", Toast.LENGTH_SHORT).show();
                             dialogDeleteEdit(position);
                         }
                     });
@@ -288,15 +257,12 @@ protected  void onResume(){
             list.setHoverOperation(new HoverOperationAllSwap(modelList));
 
 
-            Log.e("Sprawdz co z file",Arrays.toString(data.getArrayWithSubpoints()));
+            Log.e("Sprawdz co z file", Arrays.toString(data.getArrayWithSubpoints()));
             list.setAdapter(adapter);
             list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-
-
-            setTextView();
         } catch (Exception e) {
-            Log.e("Test Nie dziala wyswie",Arrays.toString(e.getStackTrace()));
+            Log.e("Test Nie dziala wyswie", Arrays.toString(e.getStackTrace()));
         }
     }
 
@@ -318,13 +284,12 @@ protected  void onResume(){
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 modelList.remove(position);
-               // adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
+                // adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
                 adapter.notifyDataSetChanged();
                 list.setAdapter(adapter);
 
                 Toast.makeText(getApplicationContext(), R.string.deleted, Toast.LENGTH_SHORT).show();
                 updateData();
-                setTextView();
             }
         });
         builder.setNegativeButton(getResources().getString(R.string.no), null);
@@ -355,11 +320,8 @@ protected  void onResume(){
                     boolean enabled = adapter.getItem(position).getEnabled();
                     modelList.remove(position);
                     modelList.add(position, new Model(edittext.getText().toString(), enabled));
-                    //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
                     adapter.notifyDataSetChanged();
                     list.setAdapter(adapter);
-
-                    setTextView();
 
                     Toast.makeText(getApplicationContext(), R.string.edited, Toast.LENGTH_SHORT).show();
                     updateData();
@@ -413,7 +375,6 @@ protected  void onResume(){
                 public void onClick(DialogInterface dialog, int whichButton) {
                     if (!edittext.getText().toString().isEmpty()) {
                         updateAdapter(edittext.getText().toString());
-                        setTextView();
                     } else {
                         Toast.makeText(getApplicationContext(), R.string.field_cant_be_empty, Toast.LENGTH_SHORT).show();
                     }
@@ -428,9 +389,6 @@ protected  void onResume(){
     protected void updateAdapter(String subpointName) {
         modelList.add(list.getCount(), new Model(subpointName, false));
 
-
-        //adapter = new CustomAdapterWithCheckboxesWithCounter(modelList, NoteActivity.this, textView);
-
         adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), R.string.subpoint_added, Toast.LENGTH_SHORT).show();
@@ -441,7 +399,7 @@ protected  void onResume(){
                 enabled[x] = true;
             }
         }
-        bundle=new Bundle();
+        bundle = new Bundle();
         bundle.putBooleanArray(KEY, enabled);
         onDestroy();
         onCreate(bundle);

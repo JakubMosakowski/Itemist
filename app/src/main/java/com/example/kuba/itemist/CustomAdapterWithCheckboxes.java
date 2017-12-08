@@ -21,11 +21,7 @@ public class CustomAdapterWithCheckboxes extends ArrayAdapter<Model> {
 
     public ArrayList<Model> modelArray;
     Context context;
-    int fTextSize;
     View v;
-
-
-
     public CustomAdapterWithCheckboxes(ArrayList<Model> data, Context context) {
         super(context, R.layout.row_for_subpoints, data);
         this.modelArray = data;
@@ -41,20 +37,36 @@ public class CustomAdapterWithCheckboxes extends ArrayAdapter<Model> {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             convertView = inflater.inflate(R.layout.row_for_subpoints, parent, false);
         }
-        v=convertView;
-            TextView name = convertView.findViewById(R.id.textView);
-            CheckBox cb = convertView.findViewById(R.id.checkBox);
+        TextView name = convertView.findViewById(R.id.textView);
+        CheckBox cb = convertView.findViewById(R.id.checkBox);
+        cb.setTag(position);
+        name.setText(model.getName());
+        if (model.getEnabled() == true) {
+            cb.setChecked(true);
 
-            name.setText(model.getName());
-            if (model.getEnabled() == true) {
-                cb.setChecked(true);
-            } else {
-                cb.setChecked(false);
-            }
+        } else {
+            cb.setChecked(false);
+        }
+        cb.setOnClickListener(pressed);
+
 
         return convertView;
 
     }
-
+    protected View.OnClickListener pressed = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Model model;
+            model=getItem((Integer)v.getTag());
+            if(model.getEnabled()){
+                model.setEnabled(false);
+            }else
+                model.setEnabled(true);
+        }
+        };
+    @Override
+    public boolean hasStableIds() {
+        return android.os.Build.VERSION.SDK_INT < 20;
+    }
 
 }
