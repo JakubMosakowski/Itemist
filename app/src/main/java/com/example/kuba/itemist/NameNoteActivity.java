@@ -38,7 +38,7 @@ public class NameNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_name_note);
         editTextNameOfNote = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         buttonNameOfNote = (Button) findViewById(R.id.button_name_of_note);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_top);
         context = getApplicationContext();
         editTextNameOfNote.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override

@@ -16,10 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -55,7 +53,7 @@ public class AddNoteActivity extends AppCompatActivity {
         list = (DynamicListView) findViewById(R.id.listView);
         editTextSubpointOfTheList = (EditText) findViewById(R.id.editText_subpoint_of_the_list);
         context = getApplicationContext();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_top);
         intent = getIntent();
         buttonFinish=(Button)findViewById(R.id.button_finish);
         buttonSubmit=(Button)findViewById(R.id.button_accept_subpoint);
@@ -214,7 +212,7 @@ public class AddNoteActivity extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+                        Intent intent = new Intent(AddNoteActivity.this, ChooseNoteActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -327,7 +325,7 @@ public class AddNoteActivity extends AppCompatActivity {
         data.appendToFileWithSubpoints();
 
 
-        Intent intent = new Intent(AddNoteActivity.this, MainActivity.class);
+        Intent intent = new Intent(AddNoteActivity.this, ChooseNoteActivity.class);
         intent.putExtra("TAG","noteAdded");
         startActivity(intent);
 

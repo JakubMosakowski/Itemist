@@ -37,7 +37,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toRightOf="@+id/editText_subpoint_of_the_list"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_top"
         app:layout_constraintVertical_bias="0.0" />
 
     <EditText
@@ -54,11 +54,11 @@
         android:inputType="textCapSentences"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/button_accept_subpoint"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_top" />
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/toolbar_top"
+        layout="@layout/toolbar_top" />
 
 
     <com.example.kuba.itemist.DynamicListView
@@ -75,6 +75,10 @@
         android:fadeScrollbars="false"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp" />
+
+    <include
+        android:id="@+id/bottom_navigation"
+        layout="@layout/bottom_navigation"/>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -34,6 +34,7 @@ public class NoteActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private Intent intent;
     private Context context;
+    TextView toolbarTitle;
     private DynamicListView list;
     private ArrayList<Model> modelList;
     private static final String KEY = "KEY";
@@ -69,7 +70,7 @@ public class NoteActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         fontSize = prefs.getInt("fontSize", 0) + defaultFontSize;
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_top);
         intent = getIntent();
         cLayout = (ConstraintLayout) findViewById(R.id.activity_note);
 
@@ -137,7 +138,8 @@ public class NoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        toolbar.setTitle(intent.getStringExtra("location"));
+        toolbarTitle=findViewById(R.id.toolbar_title);
+        toolbarTitle.setText(intent.getStringExtra("location"));
         final ImageButton imgBtn = findViewById(R.id.overflow_icon);
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,25 +182,16 @@ public class NoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.do_you_want_to_exit)
-                .setCancelable(false)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(NoteActivity.this, ChooseNoteActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton(R.string.no, null)
-                .show();
+        Intent intent = new Intent(NoteActivity.this, ChooseNoteActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 
 
     public void mySetAdapter(Bundle bundle) {
         try {
-            DataHandler data = new DataHandler(toolbar.getTitle().toString(), context);
+            DataHandler data = new DataHandler(toolbarTitle.getText().toString(), context);
             String[] notesArray = data.getArrayWithSubpoints();
             int count = notesArray.length;
             int howManyModels = setNumberOfModels(notesArray, count);
@@ -300,7 +293,7 @@ public class NoteActivity extends AppCompatActivity {
         String[] array = new String[adapter.getCount()];
         for (int i = 0; i < modelList.size(); i++)
             array[i] = modelList.get(i).getName();
-        DataHandler data = new DataHandler(toolbar.getTitle().toString(), context, array);
+        DataHandler data = new DataHandler(toolbarTitle.getText().toString(), context, array);
 
         data.replaceFileWithSubpoints(array);
     }

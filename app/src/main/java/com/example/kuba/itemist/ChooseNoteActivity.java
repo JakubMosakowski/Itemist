@@ -9,13 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -24,9 +20,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import static android.R.attr.data;
-import static android.R.transition.move;
 
 public class ChooseNoteActivity extends AppCompatActivity {
     private CustomAdapterWithButton adapter;
@@ -49,12 +44,13 @@ public class ChooseNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_choose_note);
 
         context = getApplicationContext();
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_top);
 
         list = (DynamicListView) findViewById(R.id.listView);
 
         v = findViewById(R.id.activity_choose_note);
-        setToolbar();
+        setToolbarTop();
+        setBottomNavigation();
         try {
             enterNotesToListView();
         } catch (Exception e) {
@@ -62,6 +58,11 @@ public class ChooseNoteActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void setBottomNavigation() {
+        BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
+        bnve.setTextVisibility(false);
     }
 
     public void enterNotesToListView() {
@@ -127,28 +128,14 @@ public class ChooseNoteActivity extends AppCompatActivity {
             }
         };
 
-        /*list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                //Toast.makeText(ChooseNoteActivity.this, "ShortItemClick", Toast.LENGTH_SHORT).show();
-                goToNote(position);
-                //list.startMoveById(i);
-            }
-        });*/
         list.setHoverOperation(new HoverOperationAllSwap(notes));
-        //Log.e("Sprawdz co z file", Arrays.toString(data.getArrayWithSubpoints()));
         list.setAdapter(adapter);
         list.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
     }
 
-    public void setToolbar() {
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    public void setToolbarTop() {
+        toolbar.setNavigationIcon(null);
         final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
         imgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
