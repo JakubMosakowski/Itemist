@@ -74,7 +74,7 @@ public class NameNoteActivity extends AppCompatActivity {
                 PopupMenu popup = new PopupMenu(NameNoteActivity.this, imgBtn);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater()
-                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
+                        .inflate(R.menu.toolbar_menu_settings, popup.getMenu());
 
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

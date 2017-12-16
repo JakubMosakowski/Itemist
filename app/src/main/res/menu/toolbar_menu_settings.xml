@@ -7,8 +7,4 @@
             app:showAsAction="never"
             android:id="@+id/settings_button">
     </item>
-    <item android:title="@string/about_app"
-        app:showAsAction="never"
-        android:id="@+id/about_button">
-    </item>
 </menu>

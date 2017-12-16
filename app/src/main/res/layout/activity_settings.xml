@@ -7,15 +7,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        app:itemIconTint="@color/colorAccent"
-        app:itemTextColor="@color/colorAccent"
-        app:menu="@menu/bottom_navigation_menu"
-        xmlns:android="http://schemas.android.com/apk/res/android" />
 </LinearLayout>

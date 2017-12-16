@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +39,7 @@ public class AddNoteActivity extends AppCompatActivity {
     private String INT_KEY = "int_key";
     private Button buttonFinish;
     private Button buttonSubmit;
-    private final int maxSubpoints=50;
+    private final int maxSubpoints = 50;
     private static final String KEY = "KEY";
 
 
@@ -55,8 +53,8 @@ public class AddNoteActivity extends AppCompatActivity {
         context = getApplicationContext();
         toolbar = (Toolbar) findViewById(R.id.toolbar_top);
         intent = getIntent();
-        buttonFinish=(Button)findViewById(R.id.button_finish);
-        buttonSubmit=(Button)findViewById(R.id.button_accept_subpoint);
+        buttonFinish = (Button) findViewById(R.id.button_finish);
+        buttonSubmit = (Button) findViewById(R.id.button_accept_subpoint);
         //setters
 
         setAdapter(savedInstanceState);
@@ -106,27 +104,27 @@ public class AddNoteActivity extends AppCompatActivity {
             subpointsL = bundle.getStringArrayList(STRING_KEY_RESTORE);
         }
 
-        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL){
+        adapter = new ArrayAdapter<String>(this, R.layout.row, subpointsL) {
 
             @Override
             public long getItemId(int position) {
-            try {
-                return adapter.getItem(position).hashCode();
-            } catch (IndexOutOfBoundsException e) {
-                return -1;
+                try {
+                    return adapter.getItem(position).hashCode();
+                } catch (IndexOutOfBoundsException e) {
+                    return -1;
+                }
             }
-        }
 
             @Override
             public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = super.getView(position, convertView, parent);
+                View view = super.getView(position, convertView, parent);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialogDeleteEdit(position);
-                }
-            });
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialogDeleteEdit(position);
+                    }
+                });
                 view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -137,13 +135,13 @@ public class AddNoteActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-            return view;
-        }
+                return view;
+            }
 
             @Override
             public boolean hasStableIds() {
-            return true;
-        }
+                return true;
+            }
         };
 
 
@@ -173,36 +171,9 @@ public class AddNoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        toolbar.setTitle(intent.getStringExtra("location"));
-        final ImageButton  imgBtn=findViewById(R.id.overflow_icon);
-        imgBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Creating the instance of PopupMenu
-                PopupMenu popup = new PopupMenu(AddNoteActivity.this, imgBtn);
-                //Inflating the Popup using xml file
-                popup.getMenuInflater()
-                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
-
-                //registering popup with OnMenuItemClickListener
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getTitle().toString().equals(getResources().getString(R.string.settings)))
-                            ;
-                        else if(item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
-                            toAbout();
-
-                        return true;
-                    }
-                });
-                popup.show(); //showing popup menu
-            }
-        });
-    }
-
-    private void toAbout() {
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
+        toolbar.setTitle("");
+        final ImageButton imgBtn = findViewById(R.id.overflow_icon);
+        imgBtn.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -326,7 +297,7 @@ public class AddNoteActivity extends AppCompatActivity {
 
 
         Intent intent = new Intent(AddNoteActivity.this, ChooseNoteActivity.class);
-        intent.putExtra("TAG","noteAdded");
+        intent.putExtra("TAG", "noteAdded");
         startActivity(intent);
 
 

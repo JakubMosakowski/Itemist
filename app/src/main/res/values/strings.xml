@@ -47,6 +47,7 @@
     <string name="current_version">Obecna wersja:</string>
     <string name="in_case_of_error_send_mail">W razie jakichkolwiek problemów proszę o wiadomość na email:</string>
     <string name="author">Autor: Jakub Mosakowski</string>
+    <string name="github">http://github.com/JakubMosakowski</string>
 
 
 </resources>

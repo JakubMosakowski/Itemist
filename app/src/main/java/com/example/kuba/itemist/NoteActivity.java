@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,8 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +55,7 @@ public class NoteActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         fontSize = prefs.getInt("fontSize", 0) + defaultFontSize;
         if (getIntent().getBooleanArrayExtra(KEY) != null) {
-            Log.e("Test booleanOnResume",Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
+            Log.e("Test booleanOnResume", Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
             boolean[] enabled = getIntent().getBooleanArrayExtra(KEY);
             bundle = new Bundle();
             bundle.putBooleanArray(KEY, enabled);
@@ -90,8 +93,14 @@ public class NoteActivity extends AppCompatActivity {
         } catch (Exception e) {
         }
         mySetAdapter(savedInstanceState);
+        setBottomNavigation();
 
 
+    }
+
+    private void setBottomNavigation() {
+        BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
+        bnve.setTextVisibility(false);
     }
 
     private void toSettings() {
@@ -99,12 +108,12 @@ public class NoteActivity extends AppCompatActivity {
         boolean[] enabled = new boolean[adapter.getCount()];
         for (int x = 0; x < modelList.size(); x++) {
             if (modelList.get(x).getEnabled()) {
-                Log.e("Test modelOnSettings",String.valueOf(modelList.get(x).getEnabled()));
+                Log.e("Test modelOnSettings", String.valueOf(modelList.get(x).getEnabled()));
                 enabled[x] = true;
             }
         }
         getIntent().putExtra(KEY, enabled);
-        Log.e("Test booleanOnSettings",Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
+        Log.e("Test booleanOnSettings", Arrays.toString(getIntent().getBooleanArrayExtra(KEY)));
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
@@ -138,7 +147,8 @@ public class NoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        toolbarTitle=findViewById(R.id.toolbar_title);
+        toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setTypeface(Typeface.DEFAULT);
         toolbarTitle.setText(intent.getStringExtra("location"));
         final ImageButton imgBtn = findViewById(R.id.overflow_icon);
         imgBtn.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +165,6 @@ public class NoteActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getTitle().toString().equals(getResources().getString(R.string.settings)))
                             toSettings();
-                        else if (item.getTitle().toString().equals(getResources().getString(R.string.about_app)))
-                            toAbout();
-
                         return true;
                     }
                 });
@@ -167,26 +174,12 @@ public class NoteActivity extends AppCompatActivity {
 
     }
 
-    private void toAbout() {
-        CheckBox cb;
-        boolean[] enabled = new boolean[adapter.getCount()];
-        for (int x = 0; x < modelList.size(); x++) {
-            if (modelList.get(x).getEnabled()) {
-                enabled[x] = true;
-            }
-        }
-        getIntent().putExtra(KEY, enabled);
-        Intent intent = new Intent(this, AboutActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(NoteActivity.this, ChooseNoteActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-
 
 
     public void mySetAdapter(Bundle bundle) {

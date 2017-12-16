@@ -4,14 +4,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.internal.BottomNavigationItemView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -30,13 +33,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
     private DynamicListView list;
     private Toolbar toolbar;
     private View v;
-
-    private ImageButton imgButton;
     private String[] subpoints;
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +60,14 @@ public class ChooseNoteActivity extends AppCompatActivity {
     private void setBottomNavigation() {
         BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
         bnve.setTextVisibility(false);
+        BottomNavigationItemView addNoteItem=findViewById(R.id.action_add);
+        addNoteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChooseNoteActivity.this, AddNoteActivity.class);
+                ChooseNoteActivity.this.startActivity(intent);
+            }
+        });
     }
 
     public void enterNotesToListView() {
@@ -144,7 +149,7 @@ public class ChooseNoteActivity extends AppCompatActivity {
                 PopupMenu popup = new PopupMenu(ChooseNoteActivity.this, imgBtn);
                 //Inflating the Popup using xml file
                 popup.getMenuInflater()
-                        .inflate(R.menu.toolbar_menu_about, popup.getMenu());
+                        .inflate(R.menu.toolbar_menu_settings, popup.getMenu());
 
                 //registering popup with OnMenuItemClickListener
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

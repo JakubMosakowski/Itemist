@@ -6,12 +6,15 @@
     android:layout_height="match_parent"
 
     >
+
     <include
         android:id="@+id/toolbar_top"
-        layout="@layout/toolbar_top" />
+        layout="@layout/toolbar_top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-
         android:id="@+id/textView_version"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,42 +24,57 @@
         android:text="@string/current_version"
         android:textAlignment="center"
         android:textSize="35sp"
-        app:layout_constraintBottom_toTopOf="@id/textView_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_top"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_top" />
 
     <TextView
         android:id="@+id/textView_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:autoLink="email"
         android:text="@string/in_case_of_error_send_mail"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@id/textView_author"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/textView_author"
+        app:layout_constraintTop_toBottomOf="@+id/textView_version"
+ />
+
     <TextView
-        android:textAlignment="center"
-        android:textSize="20sp"
         android:id="@+id/textView_author"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/author"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_layout"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-    />
-    <include
-        android:id="@+id/bottom_navigation"
-        layout="@layout/bottom_navigation"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView_version"
+        app:layout_constraintVertical_bias="1.0"
+        android:autoLink="all"
+        />
+
+    <LinearLayout
+        android:id="@+id/bottom_navigation_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <include
+            android:id="@+id/bottom_navigation"
+            layout="@layout/bottom_navigation" />
+    </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>

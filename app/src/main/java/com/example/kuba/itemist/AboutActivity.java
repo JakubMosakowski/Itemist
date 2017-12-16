@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
 /**
  * Created by Kuba on 11.11.2017.
  */
@@ -17,6 +19,31 @@ public class AboutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        setToolbar();
+        setTextViews();
+        setOverflowIcon();
+        setBottomNavigation();
+    }
+
+    private void setOverflowIcon() {
+        final ImageButton imgBtn=findViewById(R.id.overflow_icon);
+        imgBtn.setVisibility(View.INVISIBLE);
+    }
+
+    private void setTextViews() {
+        TextView emailTextView=findViewById(R.id.textView_email);
+        String text=emailTextView.getText().toString()+"\n"+email;
+        emailTextView.setText(text);
+        TextView authorTextView=findViewById(R.id.textView_author);
+        String authorGithub=authorTextView.getText()+"\n"+getResources().getString(R.string.github);
+        authorTextView.setText(authorGithub);
+        TextView verTextView=findViewById(R.id.textView_version);
+        String version= BuildConfig.VERSION_NAME;
+        text=verTextView.getText().toString()+"\n"+version;
+        verTextView.setText(text);
+    }
+
+    private void setToolbar() {
         Toolbar toolbar=findViewById(R.id.toolbar_top);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -24,15 +51,10 @@ public class AboutActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        TextView emailTextView=findViewById(R.id.textView_email);
-        String text=emailTextView.getText().toString()+"\n"+email;
-        emailTextView.setText(text);
+    }
 
-        TextView verTextView=findViewById(R.id.textView_version);
-        String version=BuildConfig.VERSION_NAME;
-        text=verTextView.getText().toString()+"\n"+version;
-        verTextView.setText(text);
-        final ImageButton imgBtn=findViewById(R.id.overflow_icon);
-        imgBtn.setVisibility(View.INVISIBLE);
+    private void setBottomNavigation() {
+        BottomNavigationViewEx bnve = (BottomNavigationViewEx) findViewById(R.id.bottom_navigation);
+        bnve.setTextVisibility(false);
     }
 }
